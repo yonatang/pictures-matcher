@@ -1,0 +1,16 @@
+{
+  "v": "1",
+  "w": "2",
+  "name": "who",
+  "value": {
+    "fromEventId": 1,
+    "toEventId": 2,
+    "type": "who",
+    "operator": {
+      "id": "exclude",
+      "name": "Exclude"
+    },
+    "value": null,
+    "selected": false
+  }
+}

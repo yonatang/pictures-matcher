@@ -1,0 +1,21 @@
+{
+  "v": "1",
+  "value": {
+    "id": 1,
+    "x": 143,
+    "y": 88,
+    "name": "Start",
+    "constraints": [{
+      "type": "where",
+      "operator": {
+        "id": "oneOf",
+        "name": "Must be one of"
+      },
+      "value": [{
+        "id": "aladdin-musical",
+        "name": "Aladdin Musical"
+      }],
+      "soft": true
+    }]
+  }
+}

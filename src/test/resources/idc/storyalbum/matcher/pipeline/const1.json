@@ -1,0 +1,11 @@
+{
+  "type": "where",
+  "operator": {
+    "id": "oneOf"
+  },
+  "value": [
+    {
+      "id": "aladdin-musical"
+    }
+  ]
+}

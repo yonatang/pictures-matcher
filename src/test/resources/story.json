@@ -1,0 +1,298 @@
+{
+  "graph": {
+    "options": {
+      "directed": true,
+      "multigraph": true,
+      "compound": false
+    },
+    "nodes": [{
+      "v": "1",
+      "value": {
+        "id": 1,
+        "x": 143,
+        "y": 88,
+        "name": "Start",
+        "constraints": [{
+          "type": "where",
+          "operator": {
+            "id": "oneOf",
+            "name": "Must be one of"
+          },
+          "value": [{
+            "id": "aladdin-musical",
+            "name": "Aladdin Musical"
+          }],
+          "soft": true
+        }]
+      }
+    }, {
+      "v": "2",
+      "value": {
+        "id": 2,
+        "x": 199,
+        "y": 335,
+        "name": "Riddle",
+        "constraints": [{
+          "type": "who",
+          "operator": {
+            "id": "includeN",
+            "name": "Must include N of",
+            "extraN": true
+          },
+          "value": [{
+            "id": "alice",
+            "name": "Alice",
+            "group": "disney"
+          }, {
+            "id": "chip",
+            "name": "Chip",
+            "group": "disney"
+          }, {
+            "id": "dale",
+            "name": "Dale",
+            "group": "disney"
+          }],
+          "soft": false,
+          "group": {
+            "id": "disney",
+            "name": "Disney's Charachter"
+          },
+          "extraN": 2
+        }]
+      }
+    }, {
+      "v": "3",
+      "value": {
+        "id": 3,
+        "x": 461,
+        "y": 332,
+        "name": "Question 1",
+        "constraints": []
+      }
+    }, {
+      "v": "4",
+      "value": {
+        "id": 4,
+        "x": 591,
+        "y": 95,
+        "name": "End",
+        "constraints": [{
+          "type": "where",
+          "operator": {
+            "id": "oneOf",
+            "name": "Must be one of"
+          },
+          "value": [{
+            "id": "ariels-grotto",
+            "name": "Ariel's Grotto"
+          }],
+          "soft": false
+        }]
+      }
+    }],
+    "edges": [{
+      "v": "1",
+      "w": "2",
+      "name": "who",
+      "value": {
+        "fromEventId": 1,
+        "toEventId": 2,
+        "type": "who",
+        "operator": {
+          "id": "exclude",
+          "name": "Exclude"
+        },
+        "value": null,
+        "selected": false
+      }
+    }, {
+      "v": "1",
+      "w": "4",
+      "name": "who",
+      "value": {
+        "fromEventId": 1,
+        "toEventId": 4,
+        "type": "who",
+        "operator": {
+          "id": "exclude",
+          "name": "Exclude"
+        },
+        "value": null,
+        "selected": false
+      }
+    }, {
+      "v": "4",
+      "w": "3",
+      "name": "what",
+      "value": {
+        "fromEventId": 4,
+        "toEventId": 3,
+        "type": "what",
+        "operator": {
+          "id": "include",
+          "name": "Include"
+        },
+        "value": null,
+        "selected": false
+      }
+    }, {
+      "v": "3",
+      "w": "2",
+      "name": "when",
+      "value": {
+        "fromEventId": 3,
+        "toEventId": 2,
+        "type": "when",
+        "operator": {
+          "id": "increase",
+          "name": "Increase"
+        },
+        "value": null,
+        "selected": false
+      }
+    }, {
+      "v": "3",
+      "w": "2",
+      "name": "where",
+      "value": {
+        "fromEventId": 3,
+        "toEventId": 2,
+        "type": "where",
+        "operator": {
+          "id": "different",
+          "name": "Different"
+        },
+        "value": null,
+        "selected": false
+      }
+    }]
+  },
+  "profile": {
+    "id": "disney",
+    "name": "Disney",
+    "times": [{
+      "id": "morning",
+      "name": "Morning"
+    }, {
+      "id": "afternoon",
+      "name": "Afternoon"
+    }, {
+      "id": "night",
+      "name": "Night"
+    }],
+    "locations": [{
+      "id": "aladdin-musical",
+      "name": "Aladdin Musical"
+    }, {
+      "id": "ariels-grotto",
+      "name": "Ariel's Grotto"
+    }],
+    "characters": [{
+      "id": "father",
+      "name": "Father",
+      "group": "family"
+    }, {
+      "id": "mother",
+      "name": "Mother",
+      "group": "family"
+    }, {
+      "id": "boy",
+      "name": "Boy",
+      "group": "family"
+    }, {
+      "id": "girl",
+      "name": "Girl",
+      "group": "family"
+    }, {
+      "id": "alice",
+      "name": "Alice",
+      "group": "disney"
+    }, {
+      "id": "chip",
+      "name": "Chip",
+      "group": "disney"
+    }, {
+      "id": "dale",
+      "name": "Dale",
+      "group": "disney"
+    }],
+    "groups": [{
+      "id": "family",
+      "name": "Family"
+    }, {
+      "id": "disney",
+      "name": "Disney's Charachter"
+    }],
+    "timesById": {
+      "morning": {
+        "id": "morning",
+        "name": "Morning"
+      },
+      "afternoon": {
+        "id": "afternoon",
+        "name": "Afternoon"
+      },
+      "night": {
+        "id": "night",
+        "name": "Night"
+      }
+    },
+    "locationsById": {
+      "aladdin-musical": {
+        "id": "aladdin-musical",
+        "name": "Aladdin Musical"
+      },
+      "ariels-grotto": {
+        "id": "ariels-grotto",
+        "name": "Ariel's Grotto"
+      }
+    },
+    "charactersById": {
+      "father": {
+        "id": "father",
+        "name": "Father",
+        "group": "family"
+      },
+      "mother": {
+        "id": "mother",
+        "name": "Mother",
+        "group": "family"
+      },
+      "boy": {
+        "id": "boy",
+        "name": "Boy",
+        "group": "family"
+      },
+      "girl": {
+        "id": "girl",
+        "name": "Girl",
+        "group": "family"
+      },
+      "alice": {
+        "id": "alice",
+        "name": "Alice",
+        "group": "disney"
+      },
+      "chip": {
+        "id": "chip",
+        "name": "Chip",
+        "group": "disney"
+      },
+      "dale": {
+        "id": "dale",
+        "name": "Dale",
+        "group": "disney"
+      }
+    },
+    "groupsById": {
+      "family": {
+        "id": "family",
+        "name": "Family"
+      },
+      "disney": {
+        "id": "disney",
+        "name": "Disney's Charachter"
+      }
+    }
+  }
+}
