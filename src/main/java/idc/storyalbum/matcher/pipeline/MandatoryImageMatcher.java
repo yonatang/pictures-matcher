@@ -81,5 +81,6 @@ public class MandatoryImageMatcher {
         findAllPossibleMatches(context);
         log.info("Fixing trivial matches");
         filterMandatoryMatches(context);
+        log.info("All potential images are set");
     }
 }

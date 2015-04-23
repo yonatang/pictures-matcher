@@ -1,10 +1,10 @@
 package idc.storyalbum.matcher.pipeline;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import idc.storyalbum.matcher.model.album.Album;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedSet;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 @Service
 @Slf4j
-public class Reader {
+public class DataIOService {
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -40,5 +40,10 @@ public class Reader {
         return annotatedSet;
     }
 
+    public void writeAlbum(Album album, File file) throws IOException {
+        log.info("Writing down an album with score {} to {}", album.getScore(), file);
+        objectMapper.writeValue(file, album);
+        log.info("File {} was written. File size {}", file, file.length());
+    }
 
 }

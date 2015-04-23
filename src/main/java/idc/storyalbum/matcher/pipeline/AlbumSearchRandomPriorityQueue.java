@@ -6,8 +6,11 @@ import idc.storyalbum.matcher.model.graph.StoryDependency;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -16,8 +19,18 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * Created by yonatan on 19/4/2015.
+ * Heuristically searches for the best matching albums it found according to
+ * a partially random search
  */
-public class AlbumSearchRandomPriorityQueue implements AlbumSearch {
+@Service
+@Slf4j
+public class AlbumSearchRandomPriorityQueue {
+
+    @Value("${story-album.search.priority.num-of-repetitions}")
+    int M;
+
+    @Value("${story-album.search.num-of-results}")
+    int NUM_OF_BEST_RESULTS;
 
     @Autowired
     ScoreService scoreService;
@@ -35,16 +48,15 @@ public class AlbumSearchRandomPriorityQueue implements AlbumSearch {
     private class EventPriorityQueue extends PriorityQueue<StoryEvent> {
         public EventPriorityQueue(PipelineContext ctx, int t) {
             super((o1, o2) -> {
-                double o1Scope = scoreService.getEventScore(ctx, o1, t, M);
-                double o2Scope = scoreService.getEventScore(ctx, o2, t, M);
+                double nonFuzziness = (double) t / (double) M;
+                double o1Scope = scoreService.getEventScore(ctx, o1, nonFuzziness);
+                double o2Scope = scoreService.getEventScore(ctx, o2, nonFuzziness);
                 return Double.compare(o1Scope, o2Scope);
             });
         }
     }
 
-    private int M = 10000;
-
-    public Set<AlbumPage> findAssignment(PipelineContext ctx, int t) {
+    Set<AlbumPage> findAssignment(PipelineContext ctx, int t) {
         StoryGraph storyGraph = ctx.getStoryGraph();
         EventPriorityQueue eventQueue = new EventPriorityQueue(ctx, t);
         Map<StoryEvent, ImageMatchPriorityQueue> queues = new HashMap<>();
@@ -96,8 +108,8 @@ public class AlbumSearchRandomPriorityQueue implements AlbumSearch {
                 ctx.getStoryGraph().getDependencies()
                         .stream()
                         .collect(groupingBy(
-                                dependency1 ->
-                                        new ImmutablePair<>(dependency1.getFromEventId(), dependency1.getToEventId())));
+                                dependency ->
+                                        new ImmutablePair<>(dependency.getFromEventId(), dependency.getToEventId())));
 
         // map each event to its annotated image
         Map<Integer, AnnotatedImage> eventToImage = assignment.stream()
@@ -117,8 +129,9 @@ public class AlbumSearchRandomPriorityQueue implements AlbumSearch {
         return imagesScore + dependenciesScore;
     }
 
-    @Override
-    public Set<Album> findAlbums(PipelineContext ctx) {
+
+    public SortedSet<Album> findAlbums(PipelineContext ctx) {
+        log.info("Searching for {} best albums, using {} iterations", NUM_OF_BEST_RESULTS, M);
         SortedSet<Album> bestAlbums =
                 new TreeSet<>((o1, o2) -> Double.compare(o1.getScore(), o2.getScore()));
 
@@ -129,13 +142,19 @@ public class AlbumSearchRandomPriorityQueue implements AlbumSearch {
             }
             double score = evaluateFitness(ctx, assignment);
             Album album = new Album();
-            album.getPages().addAll(assignment); //TODO re-order it
+            album.setPages(sortPages(assignment));
             album.setScore(score);
             bestAlbums.add(album);
-            while (bestAlbums.size() > 3) {
+            while (bestAlbums.size() > NUM_OF_BEST_RESULTS) {
                 bestAlbums.remove(bestAlbums.last());
             }
         }
         return bestAlbums;
+    }
+
+    List<AlbumPage> sortPages(Set<AlbumPage> pages) {
+        List<AlbumPage> result = new ArrayList<>(pages);
+        result.sort((o1, o2) -> o1.getStoryEvent().getId() - o2.getStoryEvent().getId());
+        return result;
     }
 }
