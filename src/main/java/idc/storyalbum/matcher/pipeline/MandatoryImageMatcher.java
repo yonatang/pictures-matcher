@@ -1,10 +1,10 @@
 package idc.storyalbum.matcher.pipeline;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -15,12 +15,15 @@ import java.util.Set;
  * Created by yonatan on 18/4/2015.
  */
 @Service
+@Slf4j
 public class MandatoryImageMatcher {
 
     private boolean possibleMatch(StoryEvent event, AnnotatedImage image) {
         for (Constraint constraint : event.getConstraints()) {
-            if (!constraint.isSoft()){
-
+            if (!constraint.isSoft()) {
+                if (!ConstraintUtils.isMatch(constraint, image)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -74,7 +77,9 @@ public class MandatoryImageMatcher {
     }
 
     public void match(PipelineContext context) throws NoMatchException {
+        log.info("Finding all potential matches");
         findAllPossibleMatches(context);
+        log.info("Fixing trivial matches");
         filterMandatoryMatches(context);
     }
 }
