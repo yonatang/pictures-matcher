@@ -2,7 +2,7 @@ package idc.storyalbum.matcher.model.graph;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Getter;
 import lombok.experimental.Delegate;
 
 import java.util.HashSet;

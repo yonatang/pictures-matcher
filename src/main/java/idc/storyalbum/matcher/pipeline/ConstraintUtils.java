@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import idc.storyalbum.matcher.Consts.Constraints;
 import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;

@@ -22,17 +22,19 @@ public class StoryDependency {
         },
      */
 
-    public StoryDependency(){
+    public StoryDependency() {
 
     }
-    public StoryDependency(String type, String operator, int fromEventId, int toEventId){
-        this.value=new Value();
-        value.type=type;
-        value.fromEventId=fromEventId;
-        value.toEventId=toEventId;
-        value.internalOperator=new Value.Operator();
-        value.internalOperator.id=operator;
+
+    public StoryDependency(String type, String operator, int fromEventId, int toEventId) {
+        this.value = new Value();
+        value.type = type;
+        value.fromEventId = fromEventId;
+        value.toEventId = toEventId;
+        value.internalOperator = new Value.Operator();
+        value.internalOperator.id = operator;
     }
+
     @JsonProperty("name")
     @Getter
     private String name;
