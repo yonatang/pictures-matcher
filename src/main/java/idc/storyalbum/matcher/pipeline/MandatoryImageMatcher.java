@@ -31,8 +31,10 @@ public class MandatoryImageMatcher {
 
     private void findAllPossibleMatches(PipelineContext context) {
         for (StoryEvent storyEvent : context.getEventIdMap().values()) {
+            log.debug("Event {}:{}",storyEvent.getId(),storyEvent.getName());
             for (AnnotatedImage annotatedImage : context.getImageNameMap().values()) {
                 if (possibleMatch(storyEvent, annotatedImage)) {
+                    log.debug("  Potential match: {}",annotatedImage.getImageFilename());
                     context.addPossibleMatch(storyEvent, annotatedImage);
                 }
 
@@ -74,6 +76,17 @@ public class MandatoryImageMatcher {
                 }
             }
         } while (!stable);
+        if (log.isDebugEnabled()){
+            log.debug("Filtered potential matches:");
+            for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : context.getEventToPossibleImages().entrySet()) {
+                StoryEvent event = storyEventSetEntry.getKey();
+                Set<AnnotatedImage> possibleImages = storyEventSetEntry.getValue();
+                log.debug("  Event {}:{}",event.getId(),event.getName());
+                for (AnnotatedImage possibleImage : possibleImages) {
+                    log.debug("    Potential match: {}",possibleImage.getImageFilename());
+                }
+            }
+        }
     }
 
     public void match(PipelineContext context) throws NoMatchException {

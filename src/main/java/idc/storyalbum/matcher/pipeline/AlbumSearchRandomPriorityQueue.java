@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * Created by yonatan on 19/4/2015.
@@ -36,34 +35,36 @@ public class AlbumSearchRandomPriorityQueue {
     ScoreService scoreService;
 
     private class ImageMatchPriorityQueue extends PriorityQueue<AnnotatedImage> {
-        public ImageMatchPriorityQueue(StoryEvent event) {
+        public ImageMatchPriorityQueue(ScoreService scoreService, StoryEvent event) {
             super((o1, o2) -> {
                 double o1Score = scoreService.getImageFitScore(o1, event);
                 double o2Score = scoreService.getImageFitScore(o2, event);
-                return Double.compare(o1Score, o2Score);
+                return Double.compare(o1Score, o2Score) * -1;
             });
         }
     }
 
-    private class EventPriorityQueue extends PriorityQueue<StoryEvent> {
-        public EventPriorityQueue(PipelineContext ctx, int t) {
+    class EventPriorityQueue extends PriorityQueue<StoryEvent> {
+        public EventPriorityQueue(PipelineContext ctx, ScoreService scoreService, double nonFuzziness) {
             super((o1, o2) -> {
-                double nonFuzziness = (double) t / (double) M;
                 double o1Scope = scoreService.getEventScore(ctx, o1, nonFuzziness);
                 double o2Scope = scoreService.getEventScore(ctx, o2, nonFuzziness);
-                return Double.compare(o1Scope, o2Scope);
+                return Double.compare(o1Scope, o2Scope) * -1;
             });
         }
     }
 
     Set<AlbumPage> findAssignment(PipelineContext ctx, int t) {
         StoryGraph storyGraph = ctx.getStoryGraph();
-        EventPriorityQueue eventQueue = new EventPriorityQueue(ctx, t);
+        double nonFuzziness = (double) t / (double) M;
+        EventPriorityQueue eventQueue = new EventPriorityQueue(ctx, scoreService, nonFuzziness);
         Map<StoryEvent, ImageMatchPriorityQueue> queues = new HashMap<>();
         for (StoryEvent storyEvent : storyGraph.getEvents()) {
-            ImageMatchPriorityQueue queue = new ImageMatchPriorityQueue(storyEvent);
+            ImageMatchPriorityQueue queue = new ImageMatchPriorityQueue(scoreService, storyEvent);
             queues.put(storyEvent, queue);
-            queue.addAll(ctx.getPossibleMatches(storyEvent));
+            Set<AnnotatedImage> possibleMatches = ctx.getPossibleMatches(storyEvent);
+            log.trace("Adding for {}:{} possible images {}", storyEvent.getId(), storyEvent.getName(), possibleMatches);
+            queue.addAll(possibleMatches);
             eventQueue.add(storyEvent);
         }
 
@@ -125,7 +126,10 @@ public class AlbumSearchRandomPriorityQueue {
             count += dependencies.size();
             sum += evaluateDependencies(dependencies, i1, i2);
         }
-        double dependenciesScore = sum / (double) count;
+        double dependenciesScore = 0;
+        if (count > 0) {
+            dependenciesScore = sum / (double) count;
+        }
         return imagesScore + dependenciesScore;
     }
 
@@ -149,6 +153,7 @@ public class AlbumSearchRandomPriorityQueue {
                 bestAlbums.remove(bestAlbums.last());
             }
         }
+        log.info("Found {} albums with scores {}", bestAlbums.size(), bestAlbums.stream().map(Album::getScore).collect(toList()));
         return bestAlbums;
     }
 

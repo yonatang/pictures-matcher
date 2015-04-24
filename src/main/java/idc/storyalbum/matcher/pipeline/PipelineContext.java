@@ -28,9 +28,14 @@ public class PipelineContext {
         this.eventIdMap = storyGraph.getEvents()
                 .stream()
                 .collect(toMap(StoryEvent::getId, identity()));
+        this.eventToPossibleImages = storyGraph.getEvents().stream()
+                .collect(Collectors.toMap(identity(), (x) -> new HashSet<>()));
+
         this.imageNameMap = annotatedSet.getImages()
                 .stream()
                 .collect(toMap(annotatedImage -> annotatedImage.getImageFilename(), identity()));
+        this.imagesToPossibleEvents = set.getImages().stream()
+                .collect(toMap(identity(), (x) -> new HashSet<>()));
     }
 
     private AnnotatedSet annotatedSet;
@@ -40,8 +45,8 @@ public class PipelineContext {
     private Map<String, AnnotatedImage> imageNameMap = new HashMap<>();
     private Set<String> assignedImages = new HashSet<>();
     private Set<Integer> assignedEvents = new HashSet<>();
-    private Map<StoryEvent, Set<AnnotatedImage>> eventToPossibleImages = new HashMap<>();
-    private Map<AnnotatedImage, Set<StoryEvent>> imagesToPossibleEvents = new HashMap<>();
+    private Map<StoryEvent, Set<AnnotatedImage>> eventToPossibleImages;
+    private Map<AnnotatedImage, Set<StoryEvent>> imagesToPossibleEvents;
 
     /**
      * Add to an event a possible image

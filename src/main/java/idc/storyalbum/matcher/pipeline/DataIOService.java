@@ -2,6 +2,9 @@ package idc.storyalbum.matcher.pipeline;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import idc.storyalbum.matcher.model.album.Album;
+import idc.storyalbum.matcher.model.graph.Constraint;
+import idc.storyalbum.matcher.model.graph.StoryDependency;
+import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedSet;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,17 @@ public class DataIOService {
         log.info("Reading file {}", file);
         StoryGraph storyGraph = objectMapper.readValue(file, StoryGraph.class);
         log.info("Read graph with {} nodes and {} edges", storyGraph.getEvents().size(), storyGraph.getDependencies().size());
+        if (log.isDebugEnabled()) {
+            for (StoryEvent storyEvent : storyGraph.getEvents()) {
+                log.debug("Event {}:{}", storyEvent.getId(), storyEvent.getName());
+                for (Constraint constraint : storyEvent.getConstraints()) {
+                    log.debug("  Constraint {}", constraint);
+                }
+            }
+            for (StoryDependency storyDependency : storyGraph.getDependencies()) {
+                log.debug("Dependency {} {}->{}: {} {}", storyDependency.getType(), storyDependency.getFromEventId(), storyDependency.getToEventId(), storyDependency.getName(), storyDependency.getOperator());
+            }
+        }
         return storyGraph;
     }
 

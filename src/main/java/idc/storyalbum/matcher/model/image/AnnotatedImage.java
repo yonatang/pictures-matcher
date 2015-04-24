@@ -6,6 +6,7 @@ import lombok.Data;
 import org.joda.time.DateTime;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -23,4 +24,17 @@ public class AnnotatedImage {
     private DateTime imageDate;
     private ImageQuality imageQuality;
     private Set<Rectangle> facesLocations = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnnotatedImage that = (AnnotatedImage) o;
+        return Objects.equals(imageFilename, that.imageFilename);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(imageFilename);
+    }
 }

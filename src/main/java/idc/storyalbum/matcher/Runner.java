@@ -29,7 +29,7 @@ public class Runner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        File annotatedSetFile = new File("/tmp/s1.json");
+        File annotatedSetFile = new File("/tmp/annotatedSet.json");
         File storyGraphFile = new File("/tmp/story.json");
         PipelineContext ctx = dataIOService.readData(storyGraphFile, annotatedSetFile);
         mandatoryImageMatcher.match(ctx);

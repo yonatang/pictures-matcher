@@ -3,6 +3,7 @@ package idc.storyalbum.matcher.pipeline;
 import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.matcher.model.image.ImageQuality;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
@@ -22,6 +23,13 @@ public class ScoreService {
     @Value("${story-album.scores.quality-factory}")
     private double qualityFactor;
 
+    @Value("${story-album.scores.underExposedPenalty}")
+    private double underExposedPenalty;
+    @Value("${story-album.scores.blurinessLevelPenalty}")
+    private double blurinessLevelPenalty;
+    @Value("${story-album.scores.overExposedPenalty}")
+    private double overExposedPenalty;
+
     /**
      * Calculate the fineness of a specific image to an event
      *
@@ -29,18 +37,30 @@ public class ScoreService {
      * @param event
      * @return score
      */
-    @Cacheable
+//    @Cacheable(keyGenerator = "imageFitScoreKeyGen")
     public double getImageFitScore(AnnotatedImage image, StoryEvent event) {
         Set<Constraint> softConstraints = event.getConstraints().stream()
                 .filter(Constraint::isSoft)
                 .collect(Collectors.toSet());
+        ImageQuality imageQuality = image.getImageQuality();
+        imageQuality.getBlurinessLevelPenalty();
+        imageQuality.getOverExposedPenalty();
+        imageQuality.getUnderExposedPenalty();
+
+        double qualityScore = qualityFactor * (
+                underExposedPenalty * imageQuality.getUnderExposedPenalty() +
+                        overExposedPenalty * imageQuality.getOverExposedPenalty() +
+                        blurinessLevelPenalty * imageQuality.getBlurinessLevelPenalty());
+
         long softConstraintsCount = Math.min(softConstraints.size(), 10);
         double factor = (1.0 - qualityFactor) / ((double) softConstraintsCount);
+
 
         long matchedConstraints = softConstraints.stream()
                 .filter(constraint -> ConstraintUtils.isMatch(constraint, image))
                 .count();
-        return factor / (double) matchedConstraints;
+
+        return qualityScore + factor * Math.min(matchedConstraints, 10.0);
     }
 
     @Value("${story-album.scores.event-factor}")
@@ -55,7 +75,7 @@ public class ScoreService {
      *                     nonFuzziness 1: totally deterministic. nonFuzziness 0: very random
      * @return
      */
-    @Cacheable
+//    @Cacheable(keyGenerator = "eventScoreKeyGen")
     public double getEventScore(PipelineContext ctx, StoryEvent event, double nonFuzziness) {
         double largestOptions = ctx.getEventToPossibleImages().values()
                 .stream()
