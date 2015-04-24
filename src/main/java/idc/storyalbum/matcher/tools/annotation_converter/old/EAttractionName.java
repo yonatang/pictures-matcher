@@ -1,4 +1,5 @@
 package idc.storyalbum.matcher.tools.annotation_converter.old;
+
 /**
  * Holds the name f the attraction within the region
  *
@@ -179,6 +180,7 @@ public enum EAttractionName {
     tomorrowland_starcade("Starcade");
 
     private String value;
+
     private EAttractionName(String value) {
         this.value = value;
     }

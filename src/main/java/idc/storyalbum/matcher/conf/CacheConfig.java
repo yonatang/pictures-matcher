@@ -11,9 +11,6 @@ import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.lang.reflect.Method;
-import java.util.Objects;
-
 /**
  * Created by yonatan on 23/4/2015.
  */

@@ -8,7 +8,7 @@ public class AutomaticImageQuality {
     public String toString() {
         StringBuilder retVal = new StringBuilder();
 
-        String sep=System.lineSeparator();
+        String sep = System.lineSeparator();
         retVal.append("\tover Exposed penalty: " + overExposedPenalty);
         retVal.append(sep);
         retVal.append("\tunder Exposed penalty: " + underExposedPenalty);
