@@ -1,6 +1,7 @@
 package idc.storyalbum.matcher.model.image;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Set;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@JsonPropertyOrder({"baseDir", "images"})
 public class AnnotatedSet {
     @Setter(AccessLevel.NONE)
     private Set<AnnotatedImage> images = new HashSet<>();

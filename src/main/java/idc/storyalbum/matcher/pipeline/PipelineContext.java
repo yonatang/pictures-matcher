@@ -30,7 +30,7 @@ public class PipelineContext {
                 .collect(toMap(StoryEvent::getId, identity()));
         this.imageNameMap = annotatedSet.getImages()
                 .stream()
-                .collect(toMap(annotatedImage -> annotatedImage.getImageFile().getName(), identity()));
+                .collect(toMap(annotatedImage -> annotatedImage.getImageFilename(), identity()));
     }
 
     private AnnotatedSet annotatedSet;
