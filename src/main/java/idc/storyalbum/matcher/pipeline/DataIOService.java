@@ -10,13 +10,14 @@ import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.model.image.AnnotatedSet;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yonatan on 18/4/2015.
@@ -36,14 +37,16 @@ public class DataIOService {
         StoryGraph storyGraph = objectMapper.readValue(file, StoryGraph.class);
         log.info("Read graph with {} nodes and {} edges", storyGraph.getEvents().size(), storyGraph.getDependencies().size());
         if (log.isDebugEnabled()) {
-            for (StoryEvent storyEvent : storyGraph.getEvents()) {
-                log.debug("Event {}:{}", storyEvent.getId(), storyEvent.getName());
+            List<StoryEvent> sortedEvents = new ArrayList<>(storyGraph.getEvents());
+            sortedEvents.sort((o1, o2) -> o1.getId() - o2.getId());
+            for (StoryEvent storyEvent : sortedEvents) {
+                log.debug("  {}", storyEvent);
                 for (Constraint constraint : storyEvent.getConstraints()) {
-                    log.debug("  Constraint {}", constraint);
+                    log.debug("    {}", constraint);
                 }
             }
             for (StoryDependency storyDependency : storyGraph.getDependencies()) {
-                log.debug("Dependency {} {}->{}: {} {}", storyDependency.getType(), storyDependency.getFromEventId(), storyDependency.getToEventId(), storyDependency.getName(), storyDependency.getOperator());
+                log.debug("  {}", storyDependency);
             }
         }
         return storyGraph;
@@ -63,13 +66,9 @@ public class DataIOService {
             for (AlbumPage albumPage : album.getPages()) {
                 StoryEvent storyEvent = albumPage.getStoryEvent();
                 AnnotatedImage image = albumPage.getImage();
-                log.debug("  Event [{}:{}] matched to {}", storyEvent.getId(), storyEvent.getName(), image.getImageFilename());
+                log.debug("  {} matched to {}", storyEvent, image.getImageFilename());
                 for (Constraint constraint : storyEvent.getConstraints()) {
-                    log.debug("    {} constraint: {} {} {}: {} ",
-                            constraint.isSoft() ? "Soft" : "Hard",
-                            constraint.getType(), constraint.getOperator(),
-                            constraint.getExtraN() != null ? constraint.getExtraN() : "",
-                            constraint.getValues());
+                    log.debug("    {}", constraint);
                 }
                 log.debug("    Location: {}", image.getLocationId());
                 log.debug("    Characters: {}", image.getCharacterIds());

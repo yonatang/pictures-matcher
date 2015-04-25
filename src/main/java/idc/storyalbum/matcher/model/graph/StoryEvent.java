@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,20 +34,18 @@ public class StoryEvent {
         private Set<Constraint> constraints = new HashSet<>();
     }
 
+    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Event {0}:{1}");
+
     @Override
     public String toString() {
         if (value != null) {
-            return "StoryDependency(" +
-                    "id=" + value.id +
-                    ", name=" + value.name +
-                    ", constraints=" + value.constraints +
-                    ")";
+            return TO_STRING_FORMAT.format(new Object[]{
+                    value.id, value.name
+            });
         }
-        return "StoryDependency(" +
-                "id=null" +
-                ", name=null" +
-                ", constraints=null" +
-                ")";
+        return TO_STRING_FORMAT.format(new Object[]{
+                null, null
+        });
     }
 
 }

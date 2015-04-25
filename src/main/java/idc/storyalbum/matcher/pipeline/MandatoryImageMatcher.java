@@ -31,13 +31,20 @@ public class MandatoryImageMatcher {
 
     private void findAllPossibleMatches(PipelineContext context) {
         for (StoryEvent storyEvent : context.getEventIdMap().values()) {
-            log.debug("Event {}:{}", storyEvent.getId(), storyEvent.getName());
+            log.debug("{}", storyEvent);
             for (AnnotatedImage annotatedImage : context.getImageNameMap().values()) {
                 if (possibleMatch(storyEvent, annotatedImage)) {
                     log.debug("  Potential match: {}", annotatedImage.getImageFilename());
                     context.addPossibleMatch(storyEvent, annotatedImage);
                 }
-
+            }
+            if (log.isDebugEnabled()){
+                if (context.getPossibleMatches(storyEvent).isEmpty()){
+                    log.debug("  No potential matches!");
+                    //actually, the NoMatchException can be thrown here
+                    //but for the sake of logging more information, i let it
+                    //continue and fail the the next phase
+                }
             }
         }
     }
@@ -81,7 +88,7 @@ public class MandatoryImageMatcher {
             for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : context.getEventToPossibleImages().entrySet()) {
                 StoryEvent event = storyEventSetEntry.getKey();
                 Set<AnnotatedImage> possibleImages = storyEventSetEntry.getValue();
-                log.debug("  Event {}:{}", event.getId(), event.getName());
+                log.debug("  {}", event);
                 for (AnnotatedImage possibleImage : possibleImages) {
                     log.debug("    Potential match: {}", possibleImage.getImageFilename());
                 }

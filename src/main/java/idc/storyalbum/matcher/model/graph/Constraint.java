@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,11 +13,21 @@ import java.util.stream.Collectors;
 /**
  * Created by yonatan on 18/4/2015.
  */
-@ToString(exclude = {"operator", "internalValues"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Constraint {
 
     public Constraint() {
+    }
+
+    private static final MessageFormat TO_STRING_FORMAT=new MessageFormat("{0} constraint: {1} {2} {3}: {4}");
+
+    public String toString(){
+        return TO_STRING_FORMAT.format(new Object[]{
+                isSoft() ? "Soft" : "Hard",
+                getType(),
+                getOperator(),
+                getExtraN() != null ? getExtraN() : "",
+                getValues()});
     }
 
     public Constraint(String type, String operator, boolean soft, Integer extraN, String... values) {

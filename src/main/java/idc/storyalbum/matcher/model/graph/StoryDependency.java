@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 
+import java.text.MessageFormat;
+
 /**
  * Created by yonatan on 18/4/2015.
  */
@@ -43,25 +45,26 @@ public class StoryDependency {
     @Delegate
     private Value value;
 
+    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}");
+
     @Override
     public String toString() {
         if (value != null) {
-            String operator = value.internalOperator != null ? value.internalOperator.id : null;
-            return "StoryDependency(" +
-                    "name=" + name + ", " +
-                    "fromEventId=" + value.fromEventId +
-                    ", toEventId=" + value.toEventId +
-                    ", type=" + value.type +
-                    ", operator=" + operator +
-                    ")";
+            return TO_STRING_FORMAT.format(new Object[]{
+                    getName(),
+                    getFromEventId(),
+                    getToEventId(),
+                    getType(),
+                    getOperator()
+            });
         }
-        return "StoryDependency(" +
-                "name=" + name + ", " +
-                "fromEventId=null" +
-                ", toEventId=null" +
-                ", type=null" +
-                ", operator=null" +
-                ")";
+        return TO_STRING_FORMAT.format(new Object[]{
+                getName(),
+                null,
+                null,
+                null,
+                null
+        });
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
