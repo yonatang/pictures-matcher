@@ -148,6 +148,7 @@ public class AlbumSearchRandomPriorityQueue {
             Album album = new Album();
             album.setPages(sortPages(assignment));
             album.setScore(score);
+            album.setBaseDir(ctx.getAnnotatedSet().getBaseDir());
             bestAlbums.add(album);
             while (bestAlbums.size() > NUM_OF_BEST_RESULTS) {
                 bestAlbums.remove(bestAlbums.last());
