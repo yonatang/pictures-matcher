@@ -38,9 +38,22 @@ public class ScoreService {
      */
 //    @Cacheable(keyGenerator = "imageFitScoreKeyGen")
     public double getImageFitScore(AnnotatedImage image, StoryEvent event) {
+        //calculate soft constraints score
         Set<Constraint> softConstraints = event.getConstraints().stream()
                 .filter(Constraint::isSoft)
                 .collect(Collectors.toSet());
+
+        double softConstraintsScore = 0;
+        if (!softConstraints.isEmpty()) {
+            long softConstraintsCount = Math.min(softConstraints.size(), 10);
+            double factor = (1.0 - qualityFactor) / ((double) softConstraintsCount);
+            long matchedConstraints = softConstraints.stream()
+                    .filter(constraint -> ConstraintUtils.isMatch(constraint, image))
+                    .count();
+            softConstraintsScore = factor * Math.min(matchedConstraints, 10.0);
+        }
+
+        //calculate image quality score
         ImageQuality imageQuality = image.getImageQuality();
         imageQuality.getBlurinessLevelPenalty();
         imageQuality.getOverExposedPenalty();
@@ -51,15 +64,7 @@ public class ScoreService {
                         overExposedPenalty * imageQuality.getOverExposedPenalty() +
                         blurinessLevelPenalty * imageQuality.getBlurinessLevelPenalty());
 
-        long softConstraintsCount = Math.min(softConstraints.size(), 10);
-        double factor = (1.0 - qualityFactor) / ((double) softConstraintsCount);
-
-
-        long matchedConstraints = softConstraints.stream()
-                .filter(constraint -> ConstraintUtils.isMatch(constraint, image))
-                .count();
-
-        return qualityScore + factor * Math.min(matchedConstraints, 10.0);
+        return qualityScore + softConstraintsScore;
     }
 
     @Value("${story-album.scores.event-factor}")
