@@ -71,9 +71,10 @@ public class PipelineContext {
      * @param event
      * @param image
      */
-    public void removePossibleMatch(StoryEvent event, AnnotatedImage image) {
-        eventToPossibleImages.get(event).remove(image);
+    public boolean removePossibleMatch(StoryEvent event, AnnotatedImage image) {
+        boolean removed = eventToPossibleImages.get(event).remove(image);
         imagesToPossibleEvents.get(image).remove(event);
+        return removed;
     }
 
     public Set<AnnotatedImage> getPossibleMatches(StoryEvent event) {

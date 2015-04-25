@@ -5,6 +5,7 @@ import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -57,15 +58,14 @@ public class MandatoryImageMatcher {
      * @throws NoMatchException
      */
     private void filterMandatoryMatches(PipelineContext context) throws NoMatchException {
-        boolean stable;
+        final MutableBoolean stable=new MutableBoolean();
         do {
-            stable = true;
+            stable.setTrue();
 
             for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : context.getEventToPossibleImages().entrySet()) {
                 StoryEvent event = storyEventSetEntry.getKey();
                 Set<AnnotatedImage> possibleImages = storyEventSetEntry.getValue();
                 if (possibleImages.size() == 1) {
-                    stable = false;
                     //remove the mandatory match from all other events
                     AnnotatedImage theImage = Iterables.getOnlyElement(possibleImages);
 
@@ -74,15 +74,17 @@ public class MandatoryImageMatcher {
                     possibleEvents.stream()
                             .filter(possibleStoryEvent -> !possibleStoryEvent.equals(event))
                             .forEach(possibleStoryEvent -> {
-                                context.removePossibleMatch(possibleStoryEvent, theImage);
+                                boolean removed = context.removePossibleMatch(possibleStoryEvent, theImage);
+                                if (removed){
+                                    stable.setFalse();
+                                }
                             });
-
                 }
                 if (possibleImages.size() == 0) {
                     throw new NoMatchException("Couldn't find match for event " + event.getId() + ":" + event.getName());
                 }
             }
-        } while (!stable);
+        } while (stable.isFalse());
         if (log.isDebugEnabled()) {
             log.debug("Filtered potential matches:");
             for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : context.getEventToPossibleImages().entrySet()) {
