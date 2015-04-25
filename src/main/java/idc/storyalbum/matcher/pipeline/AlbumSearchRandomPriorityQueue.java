@@ -39,7 +39,8 @@ public class AlbumSearchRandomPriorityQueue {
             super((o1, o2) -> {
                 double o1Score = scoreService.getImageFitScore(o1, event);
                 double o2Score = scoreService.getImageFitScore(o2, event);
-                return Double.compare(o1Score, o2Score) * -1;
+                //sort largest first
+                return Double.compare(o2Score, o1Score);
             });
         }
     }
@@ -49,7 +50,8 @@ public class AlbumSearchRandomPriorityQueue {
             super((o1, o2) -> {
                 double o1Scope = scoreService.getEventScore(ctx, o1, nonFuzziness);
                 double o2Scope = scoreService.getEventScore(ctx, o2, nonFuzziness);
-                return Double.compare(o1Scope, o2Scope) * -1;
+                //sort largest first
+                return Double.compare(o2Scope, o1Scope);
             });
         }
     }
@@ -137,7 +139,8 @@ public class AlbumSearchRandomPriorityQueue {
     public SortedSet<Album> findAlbums(PipelineContext ctx) {
         log.info("Searching for {} best albums, using {} iterations", NUM_OF_BEST_RESULTS, M);
         SortedSet<Album> bestAlbums =
-                new TreeSet<>((o1, o2) -> Double.compare(o1.getScore(), o2.getScore()));
+                //sort largest first
+                new TreeSet<>((o1, o2) -> Double.compare(o2.getScore(), o1.getScore()));
 
         for (int i = 0; i < M; i++) {
             Set<AlbumPage> assignment = findAssignment(ctx, i);
