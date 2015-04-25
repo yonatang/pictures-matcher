@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.text.MessageFormat;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class Constraint {
     private Integer extraN;
 
     @JsonProperty("operator")
-    private Operator operator=new Operator();
+    private Operator operator;
 
     @JsonProperty("value")
     private Set<Value> internalValues;
@@ -79,9 +80,16 @@ public class Constraint {
         return operator.getId();
     }
 
-    public void setOperator(String operator){
-        this.operator=new Operator();
-        this.operator.id=operator;
+    public void setOperator(Object operator){
+        if (operator instanceof String) {
+            this.operator = new Operator();
+            this.operator.id = (String) operator;
+        } else if (operator instanceof Map){
+            this.operator=new Operator();
+            this.operator.id= (String) ((Map)operator).get("id");
+        } else {
+            this.operator= (Operator) operator;
+        }
     }
 
     private Set<String> calculateValues() {
