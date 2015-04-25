@@ -7,6 +7,7 @@ import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -142,6 +143,8 @@ public class AlbumSearchRandomPriorityQueue {
                 //sort largest first
                 new TreeSet<>((o1, o2) -> Double.compare(o2.getScore(), o1.getScore()));
 
+        StopWatch s3 = new StopWatch();
+        s3.start();
         for (int i = 0; i < M; i++) {
             Set<AlbumPage> assignment = findAssignment(ctx, i);
             if (assignment == null) {
@@ -157,7 +160,10 @@ public class AlbumSearchRandomPriorityQueue {
                 bestAlbums.remove(bestAlbums.last());
             }
         }
+        s3.stop();
         log.info("Found {} albums with scores {}", bestAlbums.size(), bestAlbums.stream().map(Album::getScore).collect(toList()));
+        log.info("Took {}", s3.toString());
+        log.debug("In average, {}ms per iteration", s3.getNanoTime() / M / 1000);
         return bestAlbums;
     }
 
