@@ -67,7 +67,7 @@ public class Constraint {
     private Integer extraN;
 
     @JsonProperty("operator")
-    private Operator operator;
+    private Operator operator=new Operator();
 
     @JsonProperty("value")
     private Set<Value> internalValues;
@@ -77,6 +77,11 @@ public class Constraint {
             return null;
         }
         return operator.getId();
+    }
+
+    public void setOperator(String operator){
+        this.operator=new Operator();
+        this.operator.id=operator;
     }
 
     private Set<String> calculateValues() {
