@@ -2,10 +2,12 @@ package idc.storyalbum.matcher.pipeline;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import idc.storyalbum.matcher.model.album.Album;
+import idc.storyalbum.matcher.model.album.AlbumPage;
 import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.graph.StoryDependency;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
+import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.model.image.AnnotatedSet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by yonatan on 18/4/2015.
@@ -50,14 +53,34 @@ public class DataIOService {
         log.info("Reading set data {}", file);
         AnnotatedSet annotatedSet = objectMapper.readValue(file, AnnotatedSet.class);
         log.info("Read set with {} images", annotatedSet.getImages().size());
-        annotatedSet.setBaseDir(new File(FilenameUtils.getFullPath(file.getAbsolutePath())));
         return annotatedSet;
     }
 
     public void writeAlbum(Album album, File file) throws IOException {
+        album.setDate(new Date());
         log.info("Writing down an album with score {} to {}", album.getScore(), file);
+        if (log.isDebugEnabled()) {
+            for (AlbumPage albumPage : album.getPages()) {
+                StoryEvent storyEvent = albumPage.getStoryEvent();
+                AnnotatedImage image = albumPage.getImage();
+                log.debug("  Event [{}:{}] matched to {}", storyEvent.getId(), storyEvent.getName(), image.getImageFilename());
+                for (Constraint constraint : storyEvent.getConstraints()) {
+                    log.debug("    {} constraint: {} {} {}: {} ",
+                            constraint.isSoft() ? "Soft" : "Hard",
+                            constraint.getType(), constraint.getOperator(),
+                            constraint.getExtraN() != null ? constraint.getExtraN() : "",
+                            constraint.getValues());
+                }
+                log.debug("    Location: {}", image.getLocationId());
+                log.debug("    Characters: {}", image.getCharacterIds());
+                log.debug("    Items: {}", image.getItemIds());
+                log.debug("    Date: {}", image.getImageDate());
+                log.debug("    Quality: {}", image.getImageQuality());
+            }
+        }
         objectMapper.writeValue(file, album);
         log.info("File {} was written. File size {}", file, file.length());
+
     }
 
 }
