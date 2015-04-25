@@ -10,6 +10,8 @@ import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.model.image.AnnotatedSet;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,7 @@ public class DataIOService {
             sortedEvents.sort((o1, o2) -> o1.getId() - o2.getId());
             for (StoryEvent storyEvent : sortedEvents) {
                 log.debug("  {}", storyEvent);
+                log.debug("  Text: \"{}\"", StringEscapeUtils.escapeJava(storyEvent.getText()));
                 for (Constraint constraint : storyEvent.getConstraints()) {
                     log.debug("    {}", constraint);
                 }

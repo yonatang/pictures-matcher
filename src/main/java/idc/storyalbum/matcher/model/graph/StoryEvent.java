@@ -29,6 +29,10 @@ public class StoryEvent {
         @Getter
         private String name;
 
+        @JsonProperty("text")
+        @Getter
+        private String text;
+
         @JsonProperty("constraints")
         @Getter
         private Set<Constraint> constraints = new HashSet<>();
