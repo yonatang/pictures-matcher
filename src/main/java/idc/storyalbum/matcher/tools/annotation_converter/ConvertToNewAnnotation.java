@@ -61,7 +61,6 @@ public class ConvertToNewAnnotation {
         x.alias("dataTypes.DisneyCharacterData", DisneyCharacterData.class);
         x.alias("dataTypes.FamilyMemberData", FamilyMemberData.class);
 
-        tryGetDate(new File("/Users/yonatan/Dropbox/Studies/Story Albums/Sets/Zoo/72157649437112944/1.jpg"));
         String dirName = "/Users/yonatan/StoryAlbumData/OldSet1";
         File dir = new File(dirName);
         Collection<File> files = FileUtils.listFiles(dir, new String[]{"txt"}, false);
@@ -84,7 +83,7 @@ public class ConvertToNewAnnotation {
             image.setLocationId(oldImage.getAttractionName().name());
 
             for (FamilyMemberData familyMemberData : oldImage.getFamilyMembersData()) {
-                if (familyMemberData.getAgeRangeEnd() < 18) {
+                if (familyMemberData.getAgeRangeEnd() <= 18) {
                     if (familyMemberData.getGender() == EGender.female) {
                         image.getCharacterIds().add("girl");
                     } else if (familyMemberData.getGender() == EGender.male) {
