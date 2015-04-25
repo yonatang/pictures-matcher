@@ -6,7 +6,6 @@ import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.model.image.ImageQuality;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
  * Created by yonatan on 22/4/2015.
  */
 @Service
-@CacheConfig(cacheNames = "scores-cache")
 public class ScoreService {
 
     @Value("${story-album.scores.quality-factory}")
@@ -36,7 +34,6 @@ public class ScoreService {
      * @param event
      * @return score
      */
-//    @Cacheable(keyGenerator = "imageFitScoreKeyGen")
     public double getImageFitScore(AnnotatedImage image, StoryEvent event) {
         //calculate soft constraints score
         Set<Constraint> softConstraints = event.getConstraints().stream()
@@ -79,7 +76,6 @@ public class ScoreService {
      *                     nonFuzziness 1: totally deterministic. nonFuzziness 0: very random
      * @return
      */
-//    @Cacheable(keyGenerator = "eventScoreKeyGen")
     public double getEventScore(PipelineContext ctx, StoryEvent event, double nonFuzziness) {
         double largestOptions = ctx.getEventToPossibleImages().values()
                 .stream()
