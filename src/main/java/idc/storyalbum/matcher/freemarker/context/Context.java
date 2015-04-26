@@ -12,4 +12,5 @@ import java.util.List;
 public class Context {
     private List<Page> pages = new ArrayList<>();
     private Page page;
+    private String subject;
 }

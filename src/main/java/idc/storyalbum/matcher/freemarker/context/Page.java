@@ -10,6 +10,6 @@ import java.util.List;
  */
 @Data
 public class Page {
-    private List<Character> characters=new ArrayList<>();
+    private List<Character> characters = new ArrayList<>();
     private Location location;
 }

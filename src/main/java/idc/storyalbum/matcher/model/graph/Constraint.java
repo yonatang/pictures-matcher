@@ -3,7 +3,6 @@ package idc.storyalbum.matcher.model.graph;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.text.MessageFormat;
 import java.util.HashSet;
@@ -20,9 +19,9 @@ public class Constraint {
     public Constraint() {
     }
 
-    private static final MessageFormat TO_STRING_FORMAT=new MessageFormat("{0} constraint: {1} {2} {3}: {4}");
+    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("{0} constraint: {1} {2} {3}: {4}");
 
-    public String toString(){
+    public String toString() {
         return TO_STRING_FORMAT.format(new Object[]{
                 isSoft() ? "Soft" : "Hard",
                 getType(),
@@ -80,15 +79,15 @@ public class Constraint {
         return operator.getId();
     }
 
-    public void setOperator(Object operator){
+    public void setOperator(Object operator) {
         if (operator instanceof String) {
             this.operator = new Operator();
             this.operator.id = (String) operator;
-        } else if (operator instanceof Map){
-            this.operator=new Operator();
-            this.operator.id= (String) ((Map)operator).get("id");
+        } else if (operator instanceof Map) {
+            this.operator = new Operator();
+            this.operator.id = (String) ((Map) operator).get("id");
         } else {
-            this.operator= (Operator) operator;
+            this.operator = (Operator) operator;
         }
     }
 

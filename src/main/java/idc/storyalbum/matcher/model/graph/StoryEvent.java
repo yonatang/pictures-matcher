@@ -17,7 +17,7 @@ public class StoryEvent {
 
     @JsonProperty("value")
     @Delegate
-    private Value value=new Value();
+    private Value value = new Value();
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class Value {

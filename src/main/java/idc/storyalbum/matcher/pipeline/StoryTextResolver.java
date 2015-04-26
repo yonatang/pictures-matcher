@@ -12,6 +12,7 @@ import idc.storyalbum.matcher.model.profile.Location;
 import idc.storyalbum.matcher.model.profile.Profile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -29,6 +30,9 @@ public class StoryTextResolver {
     @Autowired
     FreeMarkerTemplate freeMarkerTemplate;
 
+    @Value("${story-album.subject-name}")
+    private String subjectName;
+
     private Context createContext(Album album, Profile profile) {
         Map<String, Character> charIdToChar = profile.getCharacters()
                 .stream()
@@ -42,6 +46,7 @@ public class StoryTextResolver {
         Map<String, idc.storyalbum.matcher.freemarker.context.Location> locCache = new HashMap<>();
 
         Context ctx = new Context();
+        ctx.setSubject(subjectName);
         for (AlbumPage albumPage : album.getPages()) {
             Page page = new Page();
             charsToCtxChars(charIdToChar, charCache, albumPage, page);

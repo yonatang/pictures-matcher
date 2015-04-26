@@ -13,5 +13,5 @@ public class Character {
     private String id;
     private String name;
     private String gender;
-    private Set<String> groups=new HashSet<>();
+    private Set<String> groups = new HashSet<>();
 }
