@@ -1,5 +1,7 @@
 package idc.storyalbum.matcher;
 
+import idc.storyalbum.matcher.exception.NoMatchException;
+import idc.storyalbum.matcher.exception.TemplateErrorException;
 import idc.storyalbum.matcher.model.album.Album;
 import idc.storyalbum.matcher.pipeline.*;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,9 @@ public class Runner implements CommandLineRunner {
     @Autowired
     private AlbumSearchRandomPriorityQueue albumSearcher;
 
+    @Autowired
+    private StoryTextResolver storyTextResolver;
+
     @Override
     public void run(String... args) throws Exception {
         try {
@@ -34,10 +39,14 @@ public class Runner implements CommandLineRunner {
             PipelineContext ctx = dataIOService.readData(storyGraphFile, annotatedSetFile);
             mandatoryImageMatcher.match(ctx);
             SortedSet<Album> bestAlbums = albumSearcher.findAlbums(ctx);
+            Album bestAlbum = bestAlbums.first();
+            storyTextResolver.resolveText(bestAlbum, ctx.getStoryGraph().getProfile());
             File albumFile = new File("/tmp/album.json");
-            dataIOService.writeAlbum(bestAlbums.first(), albumFile);
+            dataIOService.writeAlbum(bestAlbum, albumFile);
         } catch (NoMatchException e) {
             log.error("Error! Cannot satisfy story constraints: {}", e.getMessage());
+        } catch (TemplateErrorException e) {
+            log.error("Error! Cannot process template: {}", e.getMessage());
         }
     }
 }

@@ -2,6 +2,7 @@ package idc.storyalbum.matcher.model.graph;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import idc.storyalbum.matcher.model.profile.Profile;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -23,7 +24,7 @@ public class StoryGraph {
 
     @JsonProperty("profile")
     @Getter
-    private Object profile;
+    private Profile profile;
 
     @JsonProperty("graph")
     private Graph internalGraph;

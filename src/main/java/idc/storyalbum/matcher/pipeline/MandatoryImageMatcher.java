@@ -1,6 +1,7 @@
 package idc.storyalbum.matcher.pipeline;
 
 import com.google.common.collect.Iterables;
+import idc.storyalbum.matcher.exception.NoMatchException;
 import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
@@ -39,8 +40,8 @@ public class MandatoryImageMatcher {
                     context.addPossibleMatch(storyEvent, annotatedImage);
                 }
             }
-            if (log.isDebugEnabled()){
-                if (context.getPossibleMatches(storyEvent).isEmpty()){
+            if (log.isDebugEnabled()) {
+                if (context.getPossibleMatches(storyEvent).isEmpty()) {
                     log.debug("  No potential matches!");
                     //actually, the NoMatchException can be thrown here
                     //but for the sake of logging more information, i let it
@@ -58,7 +59,7 @@ public class MandatoryImageMatcher {
      * @throws NoMatchException
      */
     private void filterMandatoryMatches(PipelineContext context) throws NoMatchException {
-        final MutableBoolean stable=new MutableBoolean();
+        final MutableBoolean stable = new MutableBoolean();
         do {
             stable.setTrue();
 
@@ -75,7 +76,7 @@ public class MandatoryImageMatcher {
                             .filter(possibleStoryEvent -> !possibleStoryEvent.equals(event))
                             .forEach(possibleStoryEvent -> {
                                 boolean removed = context.removePossibleMatch(possibleStoryEvent, theImage);
-                                if (removed){
+                                if (removed) {
                                     stable.setFalse();
                                 }
                             });

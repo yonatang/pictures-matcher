@@ -39,7 +39,7 @@ public class ConvertToHtml {
             lines.add("  <h2>Page " + idx + "</h2>");
             lines.add("  <img src='" + img + "' style='" + style + "'>");
             lines.add("  <div style='width:100%'>");
-            String text = albumPage.getStoryEvent().getText();
+            String text = albumPage.getText();
             String[] textLines = StringUtils.split(text, "\n\r");
             for (String textLine : textLines) {
                 lines.add(StringEscapeUtils.escapeHtml4(textLine) + "<br/>");

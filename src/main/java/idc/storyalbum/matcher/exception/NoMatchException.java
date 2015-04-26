@@ -1,4 +1,4 @@
-package idc.storyalbum.matcher.pipeline;
+package idc.storyalbum.matcher.exception;
 
 /**
  * Created by yonatan on 18/4/2015.

@@ -2,7 +2,6 @@ package idc.storyalbum.matcher.model.album;
 
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,8 +10,13 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class AlbumPage {
+    public AlbumPage(AnnotatedImage image, StoryEvent storyEvent) {
+        this.image = image;
+        this.storyEvent = storyEvent;
+    }
+
     private AnnotatedImage image;
     private StoryEvent storyEvent;
+    private String text;
 }
