@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class ConvertToHtml {
     public static void main(String... args) throws Exception {
-        File input = new File("/tmp/album.json");
-        File output = new File("/Users/yonatan/Desktop/out.html");
+        File input = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/album.json");
+        File output = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/out.html");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JodaModule());
         Album album = objectMapper.readValue(input, Album.class);
