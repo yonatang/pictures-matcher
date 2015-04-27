@@ -34,14 +34,14 @@ public class Runner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         try {
-            File annotatedSetFile = new File("/Users/yonatan/StoryAlbumData/OldSet1/annotatedSet.json"); //new File("/tmp/annotatedSet.json");
-            File storyGraphFile = new File("/tmp/story.json");
+            File annotatedSetFile = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/annotatedSet.json"); //new File("/tmp/annotatedSet.json");
+            File storyGraphFile = new File("/Users/yonatan/StoryAlbumData/Riddle/story.json");
             PipelineContext ctx = dataIOService.readData(storyGraphFile, annotatedSetFile);
             mandatoryImageMatcher.match(ctx);
             SortedSet<Album> bestAlbums = albumSearcher.findAlbums(ctx);
             Album bestAlbum = bestAlbums.first();
             storyTextResolver.resolveText(bestAlbum, ctx.getStoryGraph().getProfile());
-            File albumFile = new File("/tmp/album.json");
+            File albumFile = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/album.json");
             dataIOService.writeAlbum(bestAlbum, albumFile);
         } catch (NoMatchException e) {
             log.error("Error! Cannot satisfy story constraints: {}", e.getMessage());
