@@ -1,4 +1,4 @@
-package idc.storyalbum.matcher.pipeline;
+package idc.storyalbum.matcher.pipeline.albumsearch;
 
 import idc.storyalbum.matcher.model.album.Album;
 import idc.storyalbum.matcher.model.album.AlbumPage;
@@ -6,6 +6,9 @@ import idc.storyalbum.matcher.model.graph.StoryDependency;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.matcher.pipeline.DependencyUtils;
+import idc.storyalbum.matcher.pipeline.PipelineContext;
+import idc.storyalbum.matcher.pipeline.ScoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -22,9 +25,9 @@ import static java.util.stream.Collectors.*;
  * Heuristically searches for the best matching albums it found according to
  * a partially random search
  */
-@Service
+@Service("priorityQueue")
 @Slf4j
-public class AlbumSearchRandomPriorityQueue {
+public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
 
     @Value("${story-album.search.priority.num-of-repetitions}")
     int M;
@@ -32,8 +35,7 @@ public class AlbumSearchRandomPriorityQueue {
     @Value("${story-album.search.num-of-results}")
     int NUM_OF_BEST_RESULTS;
 
-    @Autowired
-    ScoreService scoreService;
+
 
     private class ImageMatchPriorityQueue extends PriorityQueue<AnnotatedImage> {
         public ImageMatchPriorityQueue(ScoreService scoreService, StoryEvent event) {
@@ -89,52 +91,8 @@ public class AlbumSearchRandomPriorityQueue {
         return assignment;
     }
 
-    private double evaluateDependencies(List<StoryDependency> dependencies, AnnotatedImage i1, AnnotatedImage i2) {
-
-        double sum = 0;
-        for (StoryDependency dependency : dependencies) {
-            sum += DependencyUtils.isMatch(dependency, i1, i2) ? 1 : -1;
-            sum *= 0.25;
-        }
-        return sum;
-    }
-
-    private double evaluateFitness(PipelineContext ctx, Set<AlbumPage> assignment) {
-        //calculate image score for each image
-        double imagesScore = assignment.stream()
-                .mapToDouble((page) -> scoreService.getImageFitScore(page.getImage(), page.getStoryEvent()))
-                .sum();
-        imagesScore = imagesScore / (double) assignment.size();
 
 
-        // map pairs of events to their dependencies list
-        Map<ImmutablePair<Integer, Integer>, List<StoryDependency>> pairDependencies =
-                ctx.getStoryGraph().getDependencies()
-                        .stream()
-                        .collect(groupingBy(
-                                dependency ->
-                                        new ImmutablePair<>(dependency.getFromEventId(), dependency.getToEventId())));
-
-        // map each event to its annotated image
-        Map<Integer, AnnotatedImage> eventToImage = assignment.stream()
-                .collect(toMap((page) -> page.getStoryEvent().getId(), AlbumPage::getImage));
-
-        // calculate each dependencies' score
-        double sum = 0;
-        int count = 0;
-        for (ImmutablePair<Integer, Integer> pair : pairDependencies.keySet()) {
-            AnnotatedImage i1 = eventToImage.get(pair.getLeft());
-            AnnotatedImage i2 = eventToImage.get(pair.getRight());
-            List<StoryDependency> dependencies = pairDependencies.get(pair);
-            count += dependencies.size();
-            sum += evaluateDependencies(dependencies, i1, i2);
-        }
-        double dependenciesScore = 0;
-        if (count > 0) {
-            dependenciesScore = sum / (double) count;
-        }
-        return imagesScore + dependenciesScore;
-    }
 
 
     public SortedSet<Album> findAlbums(PipelineContext ctx) {
@@ -167,9 +125,5 @@ public class AlbumSearchRandomPriorityQueue {
         return bestAlbums;
     }
 
-    List<AlbumPage> sortPages(Set<AlbumPage> pages) {
-        List<AlbumPage> result = new ArrayList<>(pages);
-        result.sort((o1, o2) -> o1.getStoryEvent().getId() - o2.getStoryEvent().getId());
-        return result;
-    }
+
 }
