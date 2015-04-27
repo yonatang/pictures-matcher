@@ -96,7 +96,7 @@ public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
 
 
     public SortedSet<Album> findAlbums(PipelineContext ctx) {
-        log.info("Searching for {} best albums, using {} iterations", NUM_OF_BEST_RESULTS, M);
+        log.info("Searching for {} best albums, Priority Queue strategy, using {} iterations", NUM_OF_BEST_RESULTS, M);
         SortedSet<Album> bestAlbums =
                 //sort largest first
                 new TreeSet<>((o1, o2) -> Double.compare(o2.getScore(), o1.getScore()));
