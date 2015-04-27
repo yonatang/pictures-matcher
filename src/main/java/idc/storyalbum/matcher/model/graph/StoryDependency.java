@@ -18,6 +18,7 @@ public class StoryDependency {
         "fromEventId": 1,
         "toEventId": 2,
         "type": "who",
+        "wight":1,
         "operator": {
           "id": "exclude",
           "name": "Exclude"
@@ -45,7 +46,7 @@ public class StoryDependency {
     @Delegate
     private Value value;
 
-    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}");
+    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Dependency {0} {1}->{2}(x{3}): {4} {5}");
 
     @Override
     public String toString() {
@@ -54,6 +55,7 @@ public class StoryDependency {
                     getName(),
                     getFromEventId(),
                     getToEventId(),
+                    getWight()!=null?getWight():1,
                     getType(),
                     getOperator()
             });
@@ -78,6 +80,10 @@ public class StoryDependency {
         @JsonProperty("type")
         @Getter
         private String type;
+
+        @JsonProperty("wight")
+        @Getter
+        private Integer wight;
 
         public String getOperator() {
             if (internalOperator == null) {

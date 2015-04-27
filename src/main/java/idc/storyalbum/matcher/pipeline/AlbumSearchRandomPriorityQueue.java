@@ -93,7 +93,8 @@ public class AlbumSearchRandomPriorityQueue {
 
         double sum = 0;
         for (StoryDependency dependency : dependencies) {
-            sum += DependencyUtils.isMatch(dependency, i1, i2) ? 1 : -1;
+            int wight = dependency.getWight() != null ? dependency.getWight() : 1;
+            sum += (DependencyUtils.isMatch(dependency, i1, i2) ? 1 : -1) * wight;
             sum *= 0.25;
         }
         return sum;
