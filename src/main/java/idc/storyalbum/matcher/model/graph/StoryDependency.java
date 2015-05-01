@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by yonatan on 18/4/2015.
@@ -22,7 +25,17 @@ public class StoryDependency {
           "id": "includeN",
           "name": "Exclude"
         },
-        extraN: 2
+        extraN: 2,
+        value:[
+        {
+              "id": "mickeyMouse",
+              "name": "Mickey",
+              "gender": "male",
+              "groups": [
+                "disney"
+              ]
+            }
+        ]
      */
 
     public StoryDependency() {
@@ -51,8 +64,8 @@ public class StoryDependency {
     @Delegate
     private Value value;
 
-    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}");
-    private static final MessageFormat TO_STRING_EX_N_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}({5})");
+    private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4} {5}");
+    private static final MessageFormat TO_STRING_EX_N_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}({5}) {6}");
 
     @Override
     public String toString() {
@@ -64,7 +77,8 @@ public class StoryDependency {
                         getToEventId(),
                         getType(),
                         getOperator(),
-                        getExtraN()
+                        getExtraN(),
+                        getValues()
                 });
             }
             return TO_STRING_FORMAT.format(new Object[]{
@@ -72,7 +86,8 @@ public class StoryDependency {
                     getFromEventId(),
                     getToEventId(),
                     getType(),
-                    getOperator()
+                    getOperator(),
+                    getValues()
             });
         }
         return TO_STRING_FORMAT.format(new Object[]{
@@ -100,6 +115,12 @@ public class StoryDependency {
         @Getter
         private Integer extraN;
 
+        @JsonProperty("value")
+        private Set<GroupValue> internalValues;
+
+        @Getter(lazy = true)
+        private final Set<String> values = calculateValues();
+
         public String getOperator() {
             if (internalOperator == null) {
                 return null;
@@ -116,6 +137,18 @@ public class StoryDependency {
             private String id;
         }
 
+        private Set<String> calculateValues() {
+            if (internalValues == null) {
+                return new HashSet<>();
+            }
+            return internalValues.stream().map(GroupValue::getId).collect(Collectors.toSet());
+        }
+
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class GroupValue {
+        @Getter
+        private String id;
     }
 
 }
