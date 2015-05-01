@@ -26,8 +26,7 @@ public abstract class AlbumSearch {
 
         double sum = 0;
         for (StoryDependency dependency : dependencies) {
-            sum += DependencyUtils.isMatch(dependency, i1, i2) ? 1 : -1;
-            sum *= 0.25;
+            sum += (DependencyUtils.isMatch(dependency, i1, i2) ? 1 : -1) * 0.25;
         }
         return sum;
     }
