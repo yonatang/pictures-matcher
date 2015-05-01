@@ -28,6 +28,18 @@ public class ScoreService {
     private double overExposedPenalty;
 
     /**
+     * Calculate the fineness of a specific image to an event with some random jittering
+     *
+     * @param image
+     * @param event
+     * @param nonFuziness
+     * @return
+     */
+    public double getImageFitScore(AnnotatedImage image, StoryEvent event, double nonFuziness) {
+        return getImageFitScore(image, event) + fuziness(nonFuziness);
+    }
+
+    /**
      * Calculate the fineness of a specific image to an event
      *
      * @param image
@@ -92,7 +104,11 @@ public class ScoreService {
 
         double result = eventScoreFactor * (1.0 - (optionsCount / largestOptions));
         result += (1.0 - eventScoreFactor) * (degree / largestDegree);
-        result += RandomUtils.nextDouble(0, 1 - Math.pow(nonFuzziness, 2));
+        result += fuziness(nonFuzziness);
         return result;
+    }
+
+    private double fuziness(double nonFuzziness) {
+        return RandomUtils.nextDouble(0, 1 - Math.pow(nonFuzziness, 2));
     }
 }

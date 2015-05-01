@@ -38,7 +38,7 @@ public abstract class AlbumSearch {
     double evaluateFitness(PipelineContext ctx, Collection<AlbumPage> assignment) {
         //calculate image score for each image
         double imagesScore = assignment.stream()
-                .mapToDouble((page) -> scoreService.getImageFitScore(page.getImage(), page.getStoryEvent()))
+                .mapToDouble((page) -> scoreService.getImageFitScore(page.getImage(), page.getStoryEvent(), 1.0))
                 .sum();
         imagesScore = imagesScore / (double) assignment.size();
 
