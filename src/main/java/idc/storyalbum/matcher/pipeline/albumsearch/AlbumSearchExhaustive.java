@@ -58,7 +58,7 @@ public class AlbumSearchExhaustive extends AlbumSearch {
     }
 
     @Override
-    public SortedSet<Album> findAlbums(PipelineContext ctx) {
+    public SortedSet<Album> findAlbumsImpl(PipelineContext ctx) {
         log.info("Searching for albums, Exhaustive Search strategy,  ");
         usedImages = new HashSet<>();
         albumPages = new LinkedList<>();

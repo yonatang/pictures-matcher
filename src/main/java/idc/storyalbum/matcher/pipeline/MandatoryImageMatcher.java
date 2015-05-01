@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by yonatan on 18/4/2015.
@@ -60,10 +58,11 @@ public class MandatoryImageMatcher {
      */
     private void filterMandatoryMatches(PipelineContext context) throws NoMatchException {
         final MutableBoolean stable = new MutableBoolean();
+        Map<StoryEvent, Set<AnnotatedImage>> possibleImageMap = context.getEventToPossibleImages();
         do {
             stable.setTrue();
 
-            for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : context.getEventToPossibleImages().entrySet()) {
+            for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : possibleImageMap.entrySet()) {
                 StoryEvent event = storyEventSetEntry.getKey();
                 Set<AnnotatedImage> possibleImages = storyEventSetEntry.getValue();
                 if (possibleImages.size() == 1) {
@@ -88,9 +87,10 @@ public class MandatoryImageMatcher {
         } while (stable.isFalse());
         if (log.isDebugEnabled()) {
             log.debug("Filtered potential matches:");
-            for (Map.Entry<StoryEvent, Set<AnnotatedImage>> storyEventSetEntry : context.getEventToPossibleImages().entrySet()) {
-                StoryEvent event = storyEventSetEntry.getKey();
-                Set<AnnotatedImage> possibleImages = storyEventSetEntry.getValue();
+            List<StoryEvent> events = new ArrayList<>(possibleImageMap.keySet());
+            events.sort((o1, o2) -> Integer.compare(o1.getId(),o2.getId()));
+            for (StoryEvent event : events) {
+                Set<AnnotatedImage> possibleImages = possibleImageMap.get(event);
                 log.debug("  {}", event);
                 for (AnnotatedImage possibleImage : possibleImages) {
                     log.debug("    Potential match: {}", possibleImage.getImageFilename());

@@ -2,23 +2,19 @@ package idc.storyalbum.matcher.pipeline.albumsearch;
 
 import idc.storyalbum.matcher.model.album.Album;
 import idc.storyalbum.matcher.model.album.AlbumPage;
-import idc.storyalbum.matcher.model.graph.StoryDependency;
 import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.graph.StoryGraph;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import idc.storyalbum.matcher.pipeline.DependencyUtils;
 import idc.storyalbum.matcher.pipeline.PipelineContext;
 import idc.storyalbum.matcher.pipeline.ScoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by yonatan on 19/4/2015.
@@ -34,7 +30,6 @@ public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
 
     @Value("${story-album.search.num-of-results}")
     int NUM_OF_BEST_RESULTS;
-
 
 
     private class ImageMatchPriorityQueue extends PriorityQueue<AnnotatedImage> {
@@ -91,11 +86,7 @@ public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
         return assignment;
     }
 
-
-
-
-
-    public SortedSet<Album> findAlbums(PipelineContext ctx) {
+    public SortedSet<Album> findAlbumsImpl(PipelineContext ctx) {
         log.info("Searching for {} best albums, Priority Queue strategy, using {} iterations", NUM_OF_BEST_RESULTS, M);
         SortedSet<Album> bestAlbums =
                 //sort largest first
@@ -124,6 +115,5 @@ public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
         log.debug("In average, {}ms per iteration", s3.getNanoTime() / M / 1000);
         return bestAlbums;
     }
-
 
 }

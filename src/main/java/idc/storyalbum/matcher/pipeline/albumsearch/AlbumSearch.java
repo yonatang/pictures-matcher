@@ -2,11 +2,14 @@ package idc.storyalbum.matcher.pipeline.albumsearch;
 
 import idc.storyalbum.matcher.model.album.Album;
 import idc.storyalbum.matcher.model.album.AlbumPage;
+import idc.storyalbum.matcher.model.graph.Constraint;
 import idc.storyalbum.matcher.model.graph.StoryDependency;
+import idc.storyalbum.matcher.model.graph.StoryEvent;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.pipeline.DependencyUtils;
 import idc.storyalbum.matcher.pipeline.PipelineContext;
 import idc.storyalbum.matcher.pipeline.ScoreService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +21,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Created by yonatan on 27/4/2015.
  */
+@Slf4j
 public abstract class AlbumSearch {
     @Autowired
     ScoreService scoreService;
@@ -74,5 +78,36 @@ public abstract class AlbumSearch {
         return result;
     }
 
-    public abstract SortedSet<Album> findAlbums(PipelineContext ctx);
+    void debugShowAlbum(Album album, PipelineContext ctx) {
+        if (log.isDebugEnabled()) {
+            int i = 0;
+            for (AlbumPage albumPage : album.getPages()) {
+                i++;
+                log.debug("Page {}", i);
+                AnnotatedImage image = albumPage.getImage();
+                log.debug("  Image: {}", image.getImageFilename());
+                log.debug("    Characters: {}", image.getCharacterIds());
+                log.debug("    Location: {}", image.getLocationId());
+                log.debug("    Items: {}", image.getItemIds());
+                StoryEvent storyEvent = albumPage.getStoryEvent();
+                log.debug("  Event: {} {}", storyEvent.getId(), storyEvent.getName());
+                for (Constraint constraint : storyEvent.getConstraints()) {
+                    log.debug("    Constraint: {}", constraint);
+                }
+                Set<StoryDependency> dependencies = ctx.getInDependenciesForEvent(storyEvent);
+                for (StoryDependency dependency : dependencies) {
+                    log.debug("    Dependencies: {}", dependency);
+
+                }
+            }
+        }
+    }
+
+    public SortedSet<Album> findAlbums(PipelineContext ctx) {
+        SortedSet<Album> bestAlbums = findAlbumsImpl(ctx);
+        debugShowAlbum(bestAlbums.first(), ctx);
+        return bestAlbums;
+    }
+
+    public abstract SortedSet<Album> findAlbumsImpl(PipelineContext ctx);
 }
