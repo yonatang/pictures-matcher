@@ -30,6 +30,8 @@ public class DependencyUtils {
                 return Sets.intersection(i1.getCharacterIds(), i2.getCharacterIds()).size() == i1.getCharacterIds().size();
             case "exclude":
                 return Sets.intersection(i1.getCharacterIds(), i2.getCharacterIds()).size() == 0;
+            case "includeN":
+                return Sets.intersection(i1.getCharacterIds(), i2.getCharacterIds()).size() >= dependency.getExtraN();
         }
         throw new IllegalStateException("Unknown who operator " + dependency.getOperator());
     }

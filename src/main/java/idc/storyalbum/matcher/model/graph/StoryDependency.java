@@ -19,9 +19,10 @@ public class StoryDependency {
         "toEventId": 2,
         "type": "who",
         "operator": {
-          "id": "exclude",
+          "id": "includeN",
           "name": "Exclude"
         },
+        extraN: 2
      */
 
     public StoryDependency() {
@@ -29,12 +30,17 @@ public class StoryDependency {
     }
 
     public StoryDependency(String type, String operator, int fromEventId, int toEventId) {
+        this(type, operator, fromEventId, toEventId, null);
+    }
+
+    public StoryDependency(String type, String operator, int fromEventId, int toEventId, Integer extraN) {
         this.value = new Value();
         value.type = type;
         value.fromEventId = fromEventId;
         value.toEventId = toEventId;
         value.internalOperator = new Value.Operator();
         value.internalOperator.id = operator;
+        value.extraN = extraN;
     }
 
     @JsonProperty("name")
@@ -46,10 +52,21 @@ public class StoryDependency {
     private Value value;
 
     private static final MessageFormat TO_STRING_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}");
+    private static final MessageFormat TO_STRING_EX_N_FORMAT = new MessageFormat("Dependency {0} {1}->{2}: {3} {4}({5})");
 
     @Override
     public String toString() {
         if (value != null) {
+            if (value.extraN!=null) {
+                return TO_STRING_EX_N_FORMAT.format(new Object[]{
+                        getName(),
+                        getFromEventId(),
+                        getToEventId(),
+                        getType(),
+                        getOperator(),
+                        getExtraN()
+                });
+            }
             return TO_STRING_FORMAT.format(new Object[]{
                     getName(),
                     getFromEventId(),
@@ -78,6 +95,10 @@ public class StoryDependency {
         @JsonProperty("type")
         @Getter
         private String type;
+
+        @JsonProperty("extraN")
+        @Getter
+        private Integer extraN;
 
         public String getOperator() {
             if (internalOperator == null) {
