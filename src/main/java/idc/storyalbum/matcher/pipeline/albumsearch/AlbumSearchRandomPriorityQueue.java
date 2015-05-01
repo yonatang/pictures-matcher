@@ -33,10 +33,10 @@ public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
 
 
     private class ImageMatchPriorityQueue extends PriorityQueue<AnnotatedImage> {
-        public ImageMatchPriorityQueue(ScoreService scoreService, StoryEvent event) {
+        public ImageMatchPriorityQueue(ScoreService scoreService, StoryEvent event, double nonFuzziness) {
             super((o1, o2) -> {
-                double o1Score = scoreService.getImageFitScore(o1, event);
-                double o2Score = scoreService.getImageFitScore(o2, event);
+                double o1Score = scoreService.getImageFitScore(o1, event,nonFuzziness);
+                double o2Score = scoreService.getImageFitScore(o2, event,nonFuzziness);
                 //sort largest first
                 return Double.compare(o2Score, o1Score);
             });
@@ -60,7 +60,7 @@ public class AlbumSearchRandomPriorityQueue extends AlbumSearch {
         EventPriorityQueue eventQueue = new EventPriorityQueue(ctx, scoreService, nonFuzziness);
         Map<StoryEvent, ImageMatchPriorityQueue> queues = new HashMap<>();
         for (StoryEvent storyEvent : storyGraph.getEvents()) {
-            ImageMatchPriorityQueue queue = new ImageMatchPriorityQueue(scoreService, storyEvent);
+            ImageMatchPriorityQueue queue = new ImageMatchPriorityQueue(scoreService, storyEvent, nonFuzziness);
             queues.put(storyEvent, queue);
             Set<AnnotatedImage> possibleMatches = ctx.getPossibleMatches(storyEvent);
             log.trace("Adding for {}:{} possible images {}", storyEvent.getId(), storyEvent.getName(), possibleMatches);

@@ -6,6 +6,8 @@ import idc.storyalbum.matcher.model.image.AnnotatedImage;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import java.util.Set;
+
 /**
  * Created by yonatan on 22/4/2015.
  */
@@ -24,14 +26,23 @@ public class DependencyUtils {
         throw new IllegalStateException("Unknown constraint type " + dependency.getType());
     }
 
+    static Set<String> filter(StoryDependency dependency, Set<String> set){
+        if (dependency.getValues()==null||dependency.getValues().isEmpty()){
+            return set;
+        }
+        return Sets.intersection(set,dependency.getValues());
+    }
     static boolean isWhoMatch(StoryDependency dependency, AnnotatedImage i1, AnnotatedImage i2) {
+        Set<String> i1CharIds=filter(dependency,i1.getCharacterIds());
+        Set<String> i2CharIds=filter(dependency,i2.getCharacterIds());
+
         switch (dependency.getOperator()) {
             case "include":
-                return Sets.intersection(i1.getCharacterIds(), i2.getCharacterIds()).size() == i1.getCharacterIds().size();
+                return Sets.intersection(i1CharIds, i2CharIds).size() == i1CharIds.size();
             case "exclude":
-                return Sets.intersection(i1.getCharacterIds(), i2.getCharacterIds()).size() == 0;
+                return Sets.intersection(i1CharIds, i2CharIds).size() == 0;
             case "includeN":
-                return Sets.intersection(i1.getCharacterIds(), i2.getCharacterIds()).size() >= dependency.getExtraN();
+                return Sets.intersection(i1CharIds, i2CharIds).size() >= dependency.getExtraN();
         }
         throw new IllegalStateException("Unknown who operator " + dependency.getOperator());
     }
