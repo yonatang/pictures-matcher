@@ -1,5 +1,6 @@
 package idc.storyalbum.matcher.tools.html_album;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import idc.storyalbum.matcher.model.album.Album;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +19,10 @@ import java.util.List;
  * Created by yonatan on 25/4/2015.
  */
 public class ConvertToHtml {
-    public static void main(String... args) throws Exception {
-        File input = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/album.json");
-        File output = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/out.html");
+    public static void write(File albumFile, File htmlFile) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JodaModule());
-        Album album = objectMapper.readValue(input, Album.class);
+        Album album = objectMapper.readValue(albumFile, Album.class);
         String baseDir = album.getBaseDir().getAbsolutePath();
         List<String> lines = new ArrayList<>();
         lines.add("<!DOCTYPE html>");
@@ -52,6 +52,12 @@ public class ConvertToHtml {
         lines.add("</div>");
         lines.add("</body>");
         lines.add("</html>");
-        FileUtils.writeLines(output, lines, false);
+        FileUtils.writeLines(htmlFile, lines, false);
+    }
+
+    public static void main(String... args) throws Exception {
+        File input = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/album.json");
+        File output = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/out.html");
+        write(input,output);
     }
 }
