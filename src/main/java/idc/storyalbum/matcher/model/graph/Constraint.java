@@ -66,6 +66,14 @@ public class Constraint {
      */
     private Integer extraN;
 
+    @JsonProperty("multiplier")
+    @Getter
+    /**
+     * Todo refactor it.
+     * Number of items of same id that are allowed, in case of "who" constraint
+     */
+    private Integer multiplier;
+
     @JsonProperty("operator")
     private Operator operator;
 

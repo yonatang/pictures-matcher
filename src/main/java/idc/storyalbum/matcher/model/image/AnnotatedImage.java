@@ -2,6 +2,8 @@ package idc.storyalbum.matcher.model.image;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import lombok.Data;
 import org.joda.time.DateTime;
 
@@ -18,9 +20,9 @@ import java.util.Set;
         "imageDate", "imageQuality", "locationId", "characterIds", "itemIds"})
 public class AnnotatedImage {
     private String imageFilename;
-    private Set<String> characterIds = new HashSet<>();
+    private HashMultiset<String> characterIds = HashMultiset.create();
     private String locationId;
-    private Set<String> itemIds = new HashSet<>();
+    private HashMultiset<String> itemIds = HashMultiset.create();
     private DateTime imageDate;
     private ImageQuality imageQuality;
     private Set<Rectangle> facesLocations = new HashSet<>();

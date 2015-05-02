@@ -1,5 +1,6 @@
 package idc.storyalbum.matcher.pipeline;
 
+import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 import idc.storyalbum.matcher.Consts.Constraints;
 import idc.storyalbum.matcher.model.graph.Constraint;
@@ -96,7 +97,7 @@ public class ConstraintUtils {
     }
 
     static boolean isWhatMatch(Constraint constraint, AnnotatedImage image) {
-        Set<String> itemIds = image.getItemIds();
+        Multiset<String> itemIds = image.getItemIds();
         return isMultivalMatch(constraint, itemIds);
     }
 
@@ -105,18 +106,19 @@ public class ConstraintUtils {
         //* includeAll
         //* includeN
         //* excludeAll
-        Set<String> characterIds = image.getCharacterIds();
+        Multiset<String> characterIds = image.getCharacterIds();
         return isMultivalMatch(constraint, characterIds);
     }
 
-    private static boolean isMultivalMatch(Constraint constraint, Set<String> imageData) {
+    private static boolean isMultivalMatch(Constraint constraint, Multiset<String> imageData) {
         switch (constraint.getOperator()) {
             case Constraints.OP_INCLUDE_N:
-                return includeN(constraint.getExtraN(), constraint.getValues(), imageData);
+                return includeN(constraint.getExtraN(), constraint.getMultiplier(),
+                        constraint.getValues(), imageData);
             case Constraints.OP_INCLUDE_ALL:
-                return includeAll(constraint.getValues(), imageData);
+                return includeAll(constraint.getValues(), constraint.getMultiplier(), imageData);
             case Constraints.OP_EXCLUDE_ALL:
-                return excludeAll(constraint.getValues(), imageData);
+                return excludeAll(constraint.getValues(), imageData.elementSet());
 
         }
         throw new IllegalStateException("Unknown operator type " + constraint.getOperator());
@@ -130,14 +132,31 @@ public class ConstraintUtils {
         return !oneOf(constraintData, imageData);
     }
 
-    private static boolean includeN(int n, Set<String> constraintData, Set<String> imageData) {
-        Sets.SetView<String> intersection = Sets.intersection(constraintData, imageData);
-        return intersection.size() >= n;
+    private static boolean includeN(int n, Integer multiplier, Set<String> constraintData, Multiset<String> imageData) {
+        if (multiplier == null || multiplier <= 1) {
+            Sets.SetView<String> intersection = Sets.intersection(constraintData, imageData.elementSet());
+            return intersection.size() >= n;
+        }
+        int matchedCount = 0;
+        for (String constraintId : constraintData) {
+            if (imageData.count(constraintId) >= multiplier) {
+                matchedCount++;
+            }
+        }
+        return matchedCount >= n;
     }
 
-    private static boolean includeAll(Set<String> constraintData, Set<String> imageData) {
-        Sets.SetView<String> intersection = Sets.intersection(constraintData, imageData);
-        return intersection.size() == constraintData.size();
+    private static boolean includeAll(Set<String> constraintData, Integer multiplier, Multiset<String> imageData) {
+        if (multiplier == null || multiplier <= 1) {
+            Sets.SetView<String> intersection = Sets.intersection(constraintData, imageData.elementSet());
+            return intersection.size() == constraintData.size();
+        }
+        for (String constraintId : constraintData) {
+            if (imageData.count(constraintId) >= multiplier) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static boolean excludeAll(Set<String> constraintData, Set<String> imageData) {

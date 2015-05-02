@@ -1,5 +1,6 @@
 package idc.storyalbum.matcher.pipeline;
 
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Sets;
 import idc.storyalbum.matcher.model.graph.StoryDependency;
 import idc.storyalbum.matcher.model.image.AnnotatedImage;
@@ -30,11 +31,12 @@ public class DependencyUtils {
         if (dependency.getValues()==null||dependency.getValues().isEmpty()){
             return set;
         }
+
         return Sets.intersection(set,dependency.getValues());
     }
     static boolean isWhoMatch(StoryDependency dependency, AnnotatedImage i1, AnnotatedImage i2) {
-        Set<String> i1CharIds=filter(dependency,i1.getCharacterIds());
-        Set<String> i2CharIds=filter(dependency,i2.getCharacterIds());
+        Set<String> i1CharIds=filter(dependency,i1.getCharacterIds().elementSet());
+        Set<String> i2CharIds=filter(dependency,i2.getCharacterIds().elementSet());
 
         switch (dependency.getOperator()) {
             case "include":
@@ -89,9 +91,9 @@ public class DependencyUtils {
     static boolean isWhatMatch(StoryDependency dependency, AnnotatedImage i1, AnnotatedImage i2) {
         switch (dependency.getOperator()) {
             case "include":
-                return Sets.intersection(i1.getItemIds(), i2.getItemIds()).size() == i1.getItemIds().size();
+                return Sets.intersection(i1.getItemIds().elementSet(), i2.getItemIds().elementSet()).size() == i1.getItemIds().size();
             case "exclude":
-                return Sets.intersection(i1.getItemIds(), i2.getItemIds()).size() == 0;
+                return Sets.intersection(i1.getItemIds().elementSet(), i2.getItemIds().elementSet()).size() == 0;
         }
         throw new IllegalStateException("Unknown what operator " + dependency.getOperator());
     }
