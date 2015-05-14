@@ -50,10 +50,15 @@ public class StoryTextResolver {
         for (AlbumPage albumPage : album.getPages()) {
             Page page = new Page();
             charsToCtxChars(charIdToChar, charCache, albumPage, page);
+            itemsToCtxItems(albumPage, page);
             locToCtxLoc(locIdToLocation, locCache, albumPage, page);
             ctx.getPages().add(page);
         }
         return ctx;
+    }
+
+    private void itemsToCtxItems(AlbumPage albumPage, Page page) {
+        page.getItems().addAll(albumPage.getImage().getItemIds().elementSet());
     }
 
     private void locToCtxLoc(Map<String, Location> locIdToLocation, Map<String, idc.storyalbum.matcher.freemarker.context.Location> locCache, AlbumPage albumPage, Page page) {

@@ -12,4 +12,5 @@ import java.util.List;
 public class Page {
     private List<Character> characters = new ArrayList<>();
     private Location location;
+    private List<String> items=new ArrayList<>();
 }

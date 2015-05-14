@@ -59,20 +59,28 @@ public class Runner implements CommandLineRunner {
     @Autowired
     private StoryTextResolver storyTextResolver;
 
+    @Value("${story-graph.file.annotated-set}")
+    private String annotatedSetPath;
+
+    @Value("${story-graph.file.story}")
+    private String storyPath;
+
     @Override
     public void run(String... args) throws Exception {
         try {
-            File annotatedSetFile = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/annotatedSet.json"); //new File("/tmp/annotatedSet.json");
-            File storyGraphFile = new File("/Users/yonatan/StoryAlbumData/Riddle/story.json");
+            File annotatedSetFile = new File(annotatedSetPath); //"/Users/yonatan/StoryAlbumData/Riddle/Set1/annotatedSet.json"); //new File("/tmp/annotatedSet.json");
+            File storyGraphFile = new File(storyPath); //"/Users/yonatan/StoryAlbumData/Riddle/story.json");
             PipelineContext ctx = dataIOService.readData(storyGraphFile, annotatedSetFile);
             mandatoryImageMatcher.match(ctx);
             SortedSet<Album> bestAlbums = albumSearch.findAlbums(ctx);
             Album bestAlbum = bestAlbums.first();
             storyTextResolver.resolveText(bestAlbum, ctx.getStoryGraph().getProfile());
-            File albumFile = new File("/Users/yonatan/StoryAlbumData/Riddle/Set1/album.json");
+
+            String albumPath = FilenameUtils.getFullPath(annotatedSetPath);
+
+            File albumFile = new File(albumPath+File.separatorChar+"album.json");
             dataIOService.writeAlbum(bestAlbum, albumFile);
             if (writeDebugAlbum) {
-                String albumPath = FilenameUtils.getFullPath(albumFile.getAbsolutePath());
                 File debugHtmlFile = new File(albumPath, "album-" + strategyName + ".html");
                 log.info("Producing a debug album {}", debugHtmlFile);
                 ConvertToHtml.write(albumFile, debugHtmlFile);

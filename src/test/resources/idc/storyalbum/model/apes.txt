@@ -1,0 +1,67 @@
+ateles geoffroyi
+
+bradypus tridactylus
+
+cebus capucinus
+
+baboon
+
+chimp
+
+chimpanzee
+
+colobus (גם ססגוני)
+
+colobus monkey
+
+erythrocebus patas
+
+gorilla
+
+guenon
+
+guenon monkey
+
+howler monkey
+
+hylobates syndactylus
+
+hussar monkey
+
+hylobates lar
+
+langur
+
+macaque
+
+marmoset
+
+nasalis larvatus
+
+orang
+
+orangutan
+
+orangutang
+
+patas
+
+pan troglodytes
+
+pongo pygmaeus
+
+proboscis monkey
+
+saimiri sciureus
+
+siamang
+
+spider monkey
+
+squirrel monkey
+
+symphalangus syndactylus
+
+ursus americanus
+
+ursus arctos

@@ -12,6 +12,10 @@ import java.util.Set;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Profile {
+    String id;
+    String name;
     Set<Location> locations = new HashSet<>();
     Set<Character> characters = new HashSet<>();
+    Set<Group> groups=new HashSet<>();
+
 }
