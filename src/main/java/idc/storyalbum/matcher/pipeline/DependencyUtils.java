@@ -2,8 +2,8 @@ package idc.storyalbum.matcher.pipeline;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Sets;
-import idc.storyalbum.matcher.model.graph.StoryDependency;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.model.graph.StoryDependency;
+import idc.storyalbum.model.image.AnnotatedImage;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 

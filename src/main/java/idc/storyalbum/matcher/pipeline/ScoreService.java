@@ -1,9 +1,9 @@
 package idc.storyalbum.matcher.pipeline;
 
-import idc.storyalbum.matcher.model.graph.Constraint;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import idc.storyalbum.matcher.model.image.ImageQuality;
+import idc.storyalbum.model.graph.Constraint;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.image.AnnotatedImage;
+import idc.storyalbum.model.image.ImageQuality;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

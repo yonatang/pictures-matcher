@@ -1,9 +1,9 @@
 package idc.storyalbum.matcher.pipeline.albumsearch;
 
-import idc.storyalbum.matcher.model.album.Album;
-import idc.storyalbum.matcher.model.album.AlbumPage;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.model.album.Album;
+import idc.storyalbum.model.album.AlbumPage;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.pipeline.PipelineContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;

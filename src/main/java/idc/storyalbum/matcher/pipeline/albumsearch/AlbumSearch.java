@@ -1,17 +1,18 @@
 package idc.storyalbum.matcher.pipeline.albumsearch;
 
-import idc.storyalbum.matcher.model.album.Album;
-import idc.storyalbum.matcher.model.album.AlbumPage;
-import idc.storyalbum.matcher.model.graph.Constraint;
-import idc.storyalbum.matcher.model.graph.StoryDependency;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.model.album.Album;
+import idc.storyalbum.model.album.AlbumPage;
+import idc.storyalbum.model.graph.Constraint;
+import idc.storyalbum.model.graph.StoryDependency;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.image.AnnotatedImage;
 import idc.storyalbum.matcher.pipeline.DependencyUtils;
 import idc.storyalbum.matcher.pipeline.PipelineContext;
 import idc.storyalbum.matcher.pipeline.ScoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 
@@ -25,6 +26,9 @@ import static java.util.stream.Collectors.toMap;
 public abstract class AlbumSearch {
     @Autowired
     ScoreService scoreService;
+
+    @Value("${story-album.score.skip-dep-calc:false}")
+    boolean skipDependenciesCalculation;
 
     double evaluateDependencies(List<StoryDependency> dependencies, AnnotatedImage i1, AnnotatedImage i2) {
 
@@ -55,19 +59,22 @@ public abstract class AlbumSearch {
         Map<Integer, AnnotatedImage> eventToImage = assignment.stream()
                 .collect(toMap((page) -> page.getStoryEvent().getId(), AlbumPage::getImage));
 
-        // calculate each dependencies' score
-        double sum = 0;
-        int count = 0;
-        for (ImmutablePair<Integer, Integer> pair : pairDependencies.keySet()) {
-            AnnotatedImage i1 = eventToImage.get(pair.getLeft());
-            AnnotatedImage i2 = eventToImage.get(pair.getRight());
-            List<StoryDependency> dependencies = pairDependencies.get(pair);
-            count += dependencies.size();
-            sum += evaluateDependencies(dependencies, i1, i2);
-        }
         double dependenciesScore = 0;
-        if (count > 0) {
-            dependenciesScore = sum / (double) count;
+        if (!skipDependenciesCalculation) {
+            // calculate each dependencies' score
+            double sum = 0;
+            int count = 0;
+            for (ImmutablePair<Integer, Integer> pair : pairDependencies.keySet()) {
+                AnnotatedImage i1 = eventToImage.get(pair.getLeft());
+                AnnotatedImage i2 = eventToImage.get(pair.getRight());
+                List<StoryDependency> dependencies = pairDependencies.get(pair);
+                count += dependencies.size();
+                sum += evaluateDependencies(dependencies, i1, i2);
+            }
+
+            if (count > 0) {
+                dependenciesScore = sum / (double) count;
+            }
         }
         return imagesScore + dependenciesScore;
     }

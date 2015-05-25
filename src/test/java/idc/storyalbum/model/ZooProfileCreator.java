@@ -3,9 +3,9 @@ package idc.storyalbum.model;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Splitter;
-import idc.storyalbum.matcher.model.profile.Character;
-import idc.storyalbum.matcher.model.profile.Group;
-import idc.storyalbum.matcher.model.profile.Profile;
+import idc.storyalbum.model.profile.Character;
+import idc.storyalbum.model.profile.Group;
+import idc.storyalbum.model.profile.Profile;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
@@ -78,7 +78,7 @@ public class ZooProfileCreator {
         profile.setId("zoo");
         profile.setName("Zoo");
         for (String animal : allAnimals) {
-            idc.storyalbum.matcher.model.profile.Character c = new Character();
+            idc.storyalbum.model.profile.Character c = new Character();
             String id = StringUtils.replaceChars(animal, ' ', '-');
             String name = Splitter.on('-').splitToList(id).stream()
                     .map((x) -> StringUtils.capitalize(x))

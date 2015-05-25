@@ -2,7 +2,7 @@ package idc.storyalbum.matcher;
 
 import idc.storyalbum.matcher.exception.NoMatchException;
 import idc.storyalbum.matcher.exception.TemplateErrorException;
-import idc.storyalbum.matcher.model.album.Album;
+import idc.storyalbum.model.album.Album;
 import idc.storyalbum.matcher.pipeline.DataIOService;
 import idc.storyalbum.matcher.pipeline.MandatoryImageMatcher;
 import idc.storyalbum.matcher.pipeline.PipelineContext;

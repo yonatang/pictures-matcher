@@ -1,10 +1,10 @@
 package idc.storyalbum.matcher.pipeline;
 
-import idc.storyalbum.matcher.model.graph.StoryDependency;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.graph.StoryGraph;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import idc.storyalbum.matcher.model.image.AnnotatedSet;
+import idc.storyalbum.model.graph.StoryDependency;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.graph.StoryGraph;
+import idc.storyalbum.model.image.AnnotatedImage;
+import idc.storyalbum.model.image.AnnotatedSet;
 import lombok.Data;
 
 import java.util.HashMap;

@@ -2,10 +2,10 @@ package idc.storyalbum.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import idc.storyalbum.matcher.model.graph.StoryDependency;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.graph.StoryGraph;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.model.graph.StoryDependency;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.graph.StoryGraph;
+import idc.storyalbum.model.image.AnnotatedImage;
 import org.testng.annotations.Test;
 
 /**

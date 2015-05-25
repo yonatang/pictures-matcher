@@ -2,14 +2,18 @@ package idc.storyalbum.matcher.pipeline;
 
 import com.google.common.collect.Iterables;
 import idc.storyalbum.matcher.exception.NoMatchException;
-import idc.storyalbum.matcher.model.graph.Constraint;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.model.graph.Constraint;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.image.AnnotatedImage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by yonatan on 18/4/2015.
@@ -105,5 +109,12 @@ public class MandatoryImageMatcher {
         log.info("Fixing trivial matches");
         filterMandatoryMatches(context);
         log.info("All potential images are set");
+        //calculate average images per node
+        int i = 0;
+        Map<StoryEvent, Set<AnnotatedImage>> eventToPossibleImages = context.getEventToPossibleImages();
+        for (Set<AnnotatedImage> storyEvents : eventToPossibleImages.values()) {
+            i += storyEvents.size();
+        }
+        log.info("Average number of pictures per node: {}", i / (double) eventToPossibleImages.size());
     }
 }

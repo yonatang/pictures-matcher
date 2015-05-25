@@ -1,7 +1,7 @@
 package idc.storyalbum.matcher.pipeline;
 
-import idc.storyalbum.matcher.model.graph.Constraint;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
+import idc.storyalbum.model.graph.Constraint;
+import idc.storyalbum.model.image.AnnotatedImage;
 import org.joda.time.DateTime;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

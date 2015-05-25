@@ -12,10 +12,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import idc.storyalbum.matcher.model.image.AnnotatedSet;
-import idc.storyalbum.matcher.model.image.ImageQuality;
-import idc.storyalbum.matcher.model.image.Rectangle;
+import idc.storyalbum.model.image.AnnotatedImage;
+import idc.storyalbum.model.image.AnnotatedSet;
+import idc.storyalbum.model.image.ImageQuality;
+import idc.storyalbum.model.image.Rectangle;
 import idc.storyalbum.matcher.tools.annotation_converter.old.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -61,7 +61,8 @@ public class ConvertToNewAnnotation {
         x.alias("dataTypes.DisneyCharacterData", DisneyCharacterData.class);
         x.alias("dataTypes.FamilyMemberData", FamilyMemberData.class);
 
-        String dirName = "/Users/yonatan/StoryAlbumData/OldSet1";
+        String dirName = "/Users/yonatan/Dropbox/Studies/Story Albums/sets/Riddle/Set5/images";
+                //"/Users/yonatan/StoryAlbumData/OldSet1";
         File dir = new File(dirName);
         Collection<File> files = FileUtils.listFiles(dir, new String[]{"txt"}, false);
         AnnotatedSet set = new AnnotatedSet();
@@ -69,7 +70,6 @@ public class ConvertToNewAnnotation {
         for (File file : files) {
             String metadataName = FilenameUtils.getName(file.getName());
             String imageFilename = substringAfter(substringBeforeLast(metadataName, ".txt"), "image_");
-
 
             AnnotatedImage image = new AnnotatedImage();
             set.getImages().add(image);

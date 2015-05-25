@@ -38,7 +38,7 @@ public class ImageData {
 
     // when
     private EPartOfDay partOfDay;
-    private Date dateTime;
+//    private Date dateTime;
 
     // quality
     private AutomaticImageQuality automaticQuality;

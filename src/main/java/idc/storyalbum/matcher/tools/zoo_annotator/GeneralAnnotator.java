@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Created by yonatan on 5/5/2015.
  */
-public class ZooAnnotator {
+public class GeneralAnnotator {
 
     private static Map<String, ImageQuality> readQualities(File file) throws Exception{
         LineIterator lineIterator = FileUtils.lineIterator(file);
@@ -56,18 +56,14 @@ public class ZooAnnotator {
         return result;
     }
     public static void main(String... args) throws Exception {
-        String base="/Users/yonatan/Dropbox/Studies/Story Albums/Sets/Zoo/";
+        String base="/Users/yonatan/Dropbox/Studies/Story Albums/Sets/MP/";
         List<String> folders =
                 Arrays.asList(
-                "72157600312588222",
-                "72157603658654812",
-                "72157604991613315",
-                "72157608170963283",
-                "72157629767911319",
-                "72157649437112944",
-                "72157649504878953",
-                "72157650229767958",
-                "72157650526307885");
+//                        "72157602995838247",
+//                        "72157622641789194"
+//                        "72157630418695066"
+                        "72157649771797738"
+ );
         for (String folder : folders) {
             annotateFolder(base+folder+"/");
 
@@ -76,37 +72,19 @@ public class ZooAnnotator {
     }
 
     private static void annotateFolder(String setImageFolder) throws Exception {
-        Set<String> allAnimals = Utils.allAnimals("./all-animals-non-latin.txt");
-        String setDataFolder = setImageFolder + "items/";
-        File setFolderFile = new File(setDataFolder);
-        File scoresFile = new File(setImageFolder,"allScores.txt");
+        File scoresFile = new File(setImageFolder,"scores.txt");
         Map<String, ImageQuality> qualities = readQualities(scoresFile);
-        Collection<File> files = FileUtils.listFiles(setFolderFile, new String[]{"txt"}, false);
+
         AnnotatedSet annotatedSet = new AnnotatedSet();
         annotatedSet.setBaseDir(new File(setImageFolder));
-        for (File file : files) {
-            if (file.getName().startsWith("set")) {
-                continue;
-            }
-            String imageFilename = FilenameUtils.removeExtension(file.getName()) + ".jpg";
+        for (String imageFilename : qualities.keySet()) {
             AnnotatedImage ai = new AnnotatedImage();
             annotatedSet.getImages().add(ai);
             ai.setImageQuality(qualities.get(imageFilename));
             ai.setImageFilename(imageFilename);
-            ai.setLocationId("zoo");
-            ai.setImageDate(new DateTime(Utils.tryGetDate(new File(setImageFolder, imageFilename))));
-
-            List<String> lines = FileUtils.readLines(file);
-            String line = StringUtils.substringBeforeLast(lines.get(0), ":");
-            List<String> someItems = Splitter.on(",").trimResults().splitToList(line);
-            someItems = someItems.stream().filter((x) -> allAnimals.contains(x.toLowerCase())).collect(Collectors.toList());
-            if (!someItems.isEmpty()) {
-                int idx = RandomUtils.nextInt(0, someItems.size());
-                String charId = someItems.get(idx);
-                charId = charId.toLowerCase().replace(' ', '-');
-//                ai.getCharacterIds().add(charId);
-            }
+            ai.setImageDate(new DateTime(Utils.tryGetDate(new File(setImageFolder+"/images", imageFilename))));
         }
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

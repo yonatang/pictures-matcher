@@ -1,14 +1,14 @@
 package idc.storyalbum.matcher.pipeline;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import idc.storyalbum.matcher.model.album.Album;
-import idc.storyalbum.matcher.model.album.AlbumPage;
-import idc.storyalbum.matcher.model.graph.Constraint;
-import idc.storyalbum.matcher.model.graph.StoryDependency;
-import idc.storyalbum.matcher.model.graph.StoryEvent;
-import idc.storyalbum.matcher.model.graph.StoryGraph;
-import idc.storyalbum.matcher.model.image.AnnotatedImage;
-import idc.storyalbum.matcher.model.image.AnnotatedSet;
+import idc.storyalbum.model.album.Album;
+import idc.storyalbum.model.album.AlbumPage;
+import idc.storyalbum.model.graph.Constraint;
+import idc.storyalbum.model.graph.StoryDependency;
+import idc.storyalbum.model.graph.StoryEvent;
+import idc.storyalbum.model.graph.StoryGraph;
+import idc.storyalbum.model.image.AnnotatedImage;
+import idc.storyalbum.model.image.AnnotatedSet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
