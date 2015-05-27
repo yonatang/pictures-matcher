@@ -103,8 +103,8 @@ public class StoryTextResolver {
             log.debug("  Context:");
             int i = 0;
             for (Page page : ctx.getPages()) {
-                log.debug("  Page {}", i);
                 i++;
+                log.debug("  Page {}", i);
                 log.debug("    Location: {}", page.getLocation());
                 for (idc.storyalbum.matcher.freemarker.context.Character character : page.getCharacters()) {
                     log.debug("    Character: {}", character);
@@ -113,15 +113,17 @@ public class StoryTextResolver {
         }
         int i = 0;
         for (AlbumPage albumPage : album.getPages()) {
+            String template = albumPage.getStoryEvent().getText();
             try {
-                String template = albumPage.getStoryEvent().getText();
-                log.debug("  Processing page {}, text {}", i, template);
+                log.debug("  Processing page {}, text {}", (i+1), template);
                 ctx.setPage(ctx.getPages().get(i));
                 String text = freeMarkerTemplate.process(template, ctx);
                 log.debug("  Compiled text: {}", text);
                 albumPage.setText(text);
                 i++;
             } catch (TemplateException e) {
+                log.error("Error processing template {}",template);
+                log.error("Page is {}",albumPage);
                 log.debug("Error while processing template", e);
                 throw new TemplateErrorException("Error parsing template for page " + i + ": " + e.getMessage());
             }
