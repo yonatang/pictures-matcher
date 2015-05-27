@@ -12,6 +12,7 @@ import idc.storyalbum.matcher.pipeline.albumsearch.AlbumSearchFactory;
 import idc.storyalbum.matcher.tools.html_album.ConvertToHtml;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -65,6 +66,9 @@ public class Runner implements CommandLineRunner {
     @Value("${story-graph.file.story}")
     private String storyPath;
 
+    @Value("${story-graph.file.output:''}")
+    private String outputPath;
+
     @Override
     public void run(String... args) throws Exception {
         try {
@@ -78,10 +82,15 @@ public class Runner implements CommandLineRunner {
 
             String albumPath = FilenameUtils.getFullPath(annotatedSetPath);
 
-            File albumFile = new File(albumPath+File.separatorChar+"album.json");
+            if (StringUtils.isBlank(outputPath)) {
+                outputPath = albumPath;
+            }
+            new File(outputPath).mkdirs();
+            File albumFile = new File(outputPath + File.separatorChar + "album.json");
+
             dataIOService.writeAlbum(bestAlbum, albumFile);
             if (writeDebugAlbum) {
-                File debugHtmlFile = new File(albumPath, "album-" + strategyName + ".html");
+                File debugHtmlFile = new File(outputPath, "album-" + strategyName + ".html");
                 log.info("Producing a debug album {}", debugHtmlFile);
                 ConvertToHtml.write(albumFile, debugHtmlFile);
             }
