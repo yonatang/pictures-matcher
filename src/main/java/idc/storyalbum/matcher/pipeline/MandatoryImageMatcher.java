@@ -106,9 +106,6 @@ public class MandatoryImageMatcher {
     public void match(PipelineContext context) throws NoMatchException {
         log.info("Finding all potential matches");
         findAllPossibleMatches(context);
-        log.info("Fixing trivial matches");
-        filterMandatoryMatches(context);
-        log.info("All potential images are set");
         //calculate average images per node
         int i = 0;
         Map<StoryEvent, Set<AnnotatedImage>> eventToPossibleImages = context.getEventToPossibleImages();
@@ -116,5 +113,9 @@ public class MandatoryImageMatcher {
             i += storyEvents.size();
         }
         log.info("Average number of pictures per node: {}", i / (double) eventToPossibleImages.size());
+        log.info("Fixing trivial matches");
+        filterMandatoryMatches(context);
+        log.info("All potential images are set");
+
     }
 }
